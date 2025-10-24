@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRO - Painel do Agente de Saúde</title>
+    <meta name="description" content="Gerencie links de triagem e acompanhe gestantes da sua área">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --success: #10b981;
+            --success-hover: #059669;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #38bdf8;
+            --dark: #0f172a;
+            --dark-secondary: #1e293b;
+            --panel: #111827;
+            --gray: #64748b;
+            --gray-light: #94a3b8;
+            --gray-lighter: #cbd5e1;
+            --ink: #e5e7eb;
+            --white: #ffffff;
+            --border: rgba(255, 255, 255, 0.1);
+            --bg-card: rgba(30, 41, 59, 0.5);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0c1324 0%, var(--dark) 100%);
+            color: var(--ink);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Topbar */
+        .topbar {
+            background: var(--panel);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .topbar-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.125rem;
+        }
+
+        .logo-badge {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--success), var(--info));
+            display: grid;
+            place-items: center;
+            font-size: 1.25rem;
+        }
+
+        .grow {
+            flex: 1;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.875rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 0.875rem;
+            color: var(--gray-lighter);
+        }
+
+        .badge strong {
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--gray-light);
+            padding: 0.5rem 0.875rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logout-btn:hover {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        /* Main Layout */
+        .page {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .action-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .action-card:hover {
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .action-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            font-size: 1.75rem;
+            flex-shrink: 0;
+        }
+
+        .action-icon.primary {
+            background: linear-gradient(135deg, var(--primary), var(--info));
+        }
+
+        .action-icon.success {
+            background: linear-gradient(135deg, var(--success), #34d399);
+        }
+
+        .action-icon.warning {
+            background: linear-gradient(135deg, var(--warning), #fbbf24);
+        }
+
+        .action-content {
+            flex: 1;
+        }
+
+        .action-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 0.25rem;
+        }
+
+        .action-desc {
+            font-size: 0.875rem;
+            color: var(--gray-light);
+        }
+
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 1.5rem;
+        }
+
+        /* Panel */
+        .panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .panel-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .panel-subtitle {
+            font-size: 0.875rem;
+            color: var(--gray-light);
+            margin-top: 0.25rem;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .search-input {
+            width: 100%;
+            height: 42px;
+            padding: 0 0.875rem 0 2.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--ink);
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .search-input::placeholder {
+            color: var(--gray);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        /* Gestantes List */
+        .gestantes-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            max-height: 60vh;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .gestantes-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .gestantes-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .gestantes-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        .gestante-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1rem;
+            transition: all 0.2s;
+        }
+
+        .gestante-card:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(30, 41, 59, 0.6);
+        }
+
+        .gestante-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+
+        .gestante-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 0.25rem;
+        }
+
+        .gestante-info {
+            font-size: 0.8125rem;
+            color: var(--gray-light);
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.625rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge.pendente {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fde68a;
+            border: 1px solid rgba(245, 158, 11, 0.4);
+        }
+
+        .status-badge.concluida {
+            background: rgba(16, 185, 129, 0.15);
+            color: #bbf7d0;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+        }
+
+        .status-badge.enviado {
+            background: rgba(59, 130, 246, 0.15);
+            color: #93c5fd;
+            border: 1px solid rgba(59, 130, 246, 0.4);
+        }
+
+        .gestante-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px dashed var(--border);
+        }
+
+        .btn-small {
+            flex: 1;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--ink);
+            font-size: 0.8125rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.375rem;
+        }
+
+        .btn-small:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-small.primary {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-small.primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-small.success {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .btn-small.success:hover {
+            background: var(--success-hover);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .stat-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--white);
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-value.primary {
+            color: var(--primary);
+        }
+
+        .stat-value.success {
+            color: var(--success);
+        }
+
+        .stat-value.warning {
+            color: var(--warning);
+        }
+
+        .stat-label {
+            font-size: 0.8125rem;
+            color: var(--gray-light);
+        }
+
+        /* Recent Activity */
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .activity-item {
+            padding: 0.875rem;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.8125rem;
+            color: var(--gray-lighter);
+        }
+
+        .activity-time {
+            color: var(--gray);
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            border: none;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: var(--white);
+        }
+
+        .btn-success:hover {
+            background: var(--success-hover);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            max-width: 500px;
+            width: 100%;
+            animation: modalSlide 0.3s ease-out;
+        }
+
+        @keyframes modalSlide {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: var(--gray-light);
+            font-size: 1.75rem;
+            cursor: pointer;
+            padding: 0.25rem;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+
+        .modal-close:hover {
+            color: var(--white);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--gray-lighter);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            height: 42px;
+            padding: 0 0.875rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--ink);
+            font-size: 0.875rem;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .form-input::placeholder {
+            color: var(--gray);
+        }
+
+        .link-display {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.875rem;
+            font-size: 0.875rem;
+            color: var(--info);
+            word-break: break-all;
+            margin-bottom: 1rem;
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .modal-footer .btn {
+            flex: 1;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--gray-light);
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                order: -1;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .topbar-content {
+                flex-wrap: wrap;
+                gap: 0.75rem;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .gestante-actions {
+                flex-direction: column;
+            }
+
+            .modal-footer {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Topbar -->
+    <div class="topbar">
+        <div class="topbar-content">
+            <div class="logo">
+                <div class="logo-badge">🧑‍⚕️</div>
+                <span>PRO • Agente de Saúde</span>
+            </div>
+            <div class="grow"></div>
+            <span class="badge">
+                🏥 <strong>UBS Centro</strong>
+            </span>
+            <span class="badge">
+                👤 Ana Paula Silva • <strong>ACS</strong>
+            </span>
+            <button class="logout-btn" onclick="alert('Logout realizado')">
+                🚪 Sair
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="page">
+        <!-- Quick Actions -->
+        <section class="quick-actions">
+            <div class="action-card" onclick="openNovoLinkModal()">
+                <div class="action-icon primary">🔗</div>
+                <div class="action-content">
+                    <div class="action-title">Gerar Novo Link</div>
+                    <div class="action-desc">Criar link de triagem para gestante</div>
+                </div>
+            </div>
+
+            <div class="action-card" onclick="openEnviarLoteModal()">
+                <div class="action-icon success">📤</div>
+                <div class="action-content">
+                    <div class="action-title">Enviar em Lote</div>
+                    <div class="action-desc">Enviar links para múltiplas gestantes</div>
+                </div>
+            </div>
+
+            <div class="action-card" onclick="alert('Abrindo relatório de acompanhamento...')">
+                <div class="action-icon warning">📊</div>
+                <div class="action-content">
+                    <div class="action-title">Relatório da Área</div>
+                    <div class="action-desc">Visualizar estatísticas e métricas</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Grid Layout -->
+        <div class="grid">
+            <!-- Gestantes List -->
+            <section class="panel">
+                <div class="panel-header">
+                    <div>
+                        <h2 class="panel-title">Gestantes da Minha Área</h2>
+                        <p class="panel-subtitle">Acompanhamento e envio de links de triagem</p>
+                    </div>
+                </div>
+
+                <div class="search-bar">
+                    <span class="search-icon">🔍</span>
+                    <input 
+                        id="searchInput"
+                        type="text" 
+                        class="search-input" 
+                        placeholder="Buscar por nome, telefone ou endereço..."
+                    />
+                </div>
+
+                <div id="gestantesList" class="gestantes-list"></div>
+            </section>
+
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <!-- Stats -->
+                <div class="panel">
+                    <h3 class="panel-title" style="margin-bottom: 1rem;">Estatísticas</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <span class="stat-value" id="statTotal">—</span>
+                            <span class="stat-label">Total</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-value success" id="statConcluidas">—</span>
+                            <span class="stat-label">Concluídas</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-value primary" id="statEnviados">—</span>
+                            <span class="stat-label">Enviados</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-value warning" id="statPendentes">—</span>
+                            <span class="stat-label">Pendentes</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="panel">
+                    <h3 class="panel-title" style="margin-bottom: 1rem;">Atividades Recentes</h3>
+                    <div id="activityList" class="activity-list"></div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Modal Novo Link -->
+    <div class="modal-overlay" id="modalNovoLink">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 class="modal-title">Gerar Link de Triagem</h2>
+                <button class="modal-close" onclick="closeModal('modalNovoLink')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" for="nomeGestante">Nome da Gestante</label>
+                    <input 
+                        id="nomeGestante" 
+                        type="text" 
+                        class="form-input" 
+                        placeholder="Digite o nome completo"
+                    />
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="telefoneGestante">Telefone (WhatsApp)</label>
+                    <input 
+                        id="telefoneGestante" 
+                        type="tel" 
+                        class="form-input" 
+                        placeholder="(00) 00000-0000"
+                    />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Link gerado será:</label>
+                    <div class="link-display" id="linkPreview">
+                        https://pro.saude.rj.gov.br/triagem/[ID-ÚNICO]
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="gerarLink()">
+                    🔗 Gerar e Copiar Link
+                </button>
+                <button class="btn btn-success" onclick="gerarEEnviar()">
+                    📤 Gerar e Enviar WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Enviar em Lote -->
+    <div class="modal-overlay" id="modalEnviarLote">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 class="modal-title">Enviar Links em Lote</h2>
+                <button class="modal-close" onclick="closeModal('modalEnviarLote')">×</button>
+            </div>
+            <div class="modal-body">
+                <p style="color: var(--gray-lighter); margin-bottom: 1rem;">
+                    Selecione as gestantes que deseja enviar o link de triagem via WhatsApp:
+                </p>
+                <div id="loteList" style="max-height: 300px; overflow-y: auto;">
+                    <!-- Será preenchido dinamicamente -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeModal('modalEnviarLote')">
+                    Cancelar
+                </button>
+                <button class="btn btn-success" onclick="enviarEmLote()">
+                    📤 Enviar Selecionados
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== Dados Simulados ==========
+        const gestantes = [
+            {
+                id: 1,
+                nome: 'Maria Silva Santos',
+                telefone: '(21) 98765-4321',
+                endereco: 'Rua das Flores, 123',
+                ig: '28 semanas',
+                status: 'pendente',
+                linkEnviado: false,
+                dataUltimoContato: null
+            },
+            {
+                id: 2,
+                nome: 'Ana Paula Costa',
+                telefone: '(21) 97654-3210',
+                endereco: 'Av. Principal, 456',
+                ig: '16 semanas',
+                status: 'enviado',
+                linkEnviado: true,
+                dataUltimoContato: '2025-01-23 14:30'
+            },
+            {
+                id: 3,
+                nome: 'Carla Mendes Oliveira',
+                telefone: '(21) 96543-2109',
+                endereco: 'Rua do Comércio, 789',
+                ig: '32 semanas',
+                status: 'concluida',
+                linkEnviado: true,
+                dataUltimoContato: '2025-01-22 10:15'
+            },
+            {
+                id: 4,
+                nome: 'Fernanda Dias Rodrigues',
+                telefone: '(21) 95432-1098',
+                endereco: 'Travessa da Paz, 321',
+                ig: '12 semanas',
+                status: 'pendente',
+                linkEnviado: false,
+                dataUltimoContato: null
+            },
+            {
+                id: 5,
+                nome: 'Juliana Souza Lima',
+                telefone: '(21) 94321-0987',
+                endereco: 'Rua Nova Esperança, 654',
+                ig: '24 semanas',
+                status: 'enviado',
+                linkEnviado: true,
+                dataUltimoContato: '2025-01-24 09:45'
+            }
+        ];
+
+        const atividades = [];
+
+        // ========== Elementos DOM ==========
+        const gestantesListEl = document.getElementById('gestantesList');
+        const activityListEl = document.getElementById('activityList');
+        const searchInput = document.getElementById('searchInput');
+
+        // ========== Funções Auxiliares ==========
+        function addActivity(msg) {
+            const now = new Date();
+            atividades.unshift({
+                msg: msg,
+                time: now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+            });
+            if (atividades.length > 5) atividades.pop();
+            renderActivity();
+        }
+
+        function updateStats() {
+            const total = gestantes.length;
+            const concluidas = gestantes.filter(g => g.status === 'concluida').length;
+            const enviados = gestantes.filter(g => g.status === 'enviado').length;
+            const pendentes = gestantes.filter(g => g.status === 'pendente').length;
+
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statConcluidas').textContent = concluidas;
+            document.getElementById('statEnviados').textContent = enviados;
+            document.getElementById('statPendentes').textContent = pendentes;
+        }
+
+        function renderActivity() {
+            activityListEl.innerHTML = '';
+            if (atividades.length === 0) {
+                activityListEl.innerHTML = '<div class="activity-item">Nenhuma atividade recente</div>';
+                return;
+            }
+            atividades.forEach(a => {
+                const item = document.createElement('div');
+                item.className = 'activity-item';
+                item.innerHTML = `
+                    ${a.msg}
+                    <div class="activity-time">${a.time}</div>
+                `;
+                activityListEl.appendChild(item);
+            });
+        }
+
+        function renderGestantes() {
+            const query = searchInput.value.toLowerCase();
+            const filtered = gestantes.filter(g => 
+                g.nome.toLowerCase().includes(query) ||
+                g.telefone.includes(query) ||
+                g.endereco.toLowerCase().includes(query)
+            );
+
+            gestantesListEl.innerHTML = '';
+            
+            if (filtered.length === 0) {
+                gestantesListEl.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">👥</div>
+                        <div style="font-weight: 600; margin-bottom: 0.5rem;">Nenhuma gestante encontrada</div>
+                        <div>Ajuste os filtros ou cadastre uma nova gestante</div>
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(g => {
+                const card = document.createElement('div');
+                card.className = 'gestante-card';
+                
+                const statusClass = g.status === 'concluida' ? 'concluida' : 
+                                   g.status === 'enviado' ? 'enviado' : 'pendente';
+                const statusText = g.status === 'concluida' ? 'Triagem Concluída' :
+                                  g.status === 'enviado' ? 'Link Enviado' : 'Aguardando Envio';
+
+                card.innerHTML = `
+                    <div class="gestante-header">
+                        <div>
+                            <div class="gestante-name">${g.nome}</div>
+                            <div class="gestante-info">
+                                📱 ${g.telefone} • 🤰 ${g.ig}
+                            </div>
+                            <div class="gestante-info">
+                                📍 ${g.endereco}
+                            </div>
+                        </div>
+                        <span class="status-badge ${statusClass}">${statusText}</span>
+                    </div>
+                    <div class="gestante-actions">
+                        ${g.status === 'pendente' ? 
+                            `<button class="btn-small success" onclick="enviarLink(${g.id})">
+                                📤 Enviar Link
+                            </button>` : ''}
+                        ${g.status === 'enviado' ? 
+                            `<button class="btn-small primary" onclick="reenviarLink(${g.id})">
+                                🔄 Reenviar
+                            </button>` : ''}
+                        <button class="btn-small" onclick="verDetalhes(${g.id})">
+                            👁️ Ver Detalhes
+                        </button>
+                        <button class="btn-small" onclick="ligar(${g.id})">
+                            📞 Ligar
+                        </button>
+                    </div>
+                `;
+                gestantesListEl.appendChild(card);
+            });
+        }
+
+        // ========== Ações ==========
+        function enviarLink(id) {
+            const gestante = gestantes.find(g => g.id === id);
+            if (!gestante) return;
+            
+            gestante.status = 'enviado';
+            gestante.linkEnviado = true;
+            gestante.dataUltimoContato = new Date().toISOString().slice(0, 16).replace('T', ' ');
+            
+            addActivity(`📤 Link enviado para ${gestante.nome}`);
+            renderGestantes();
+            updateStats();
+            
+            alert(`✅ Link de triagem enviado para ${gestante.nome} via WhatsApp!\n\n${gestante.telefone}`);
+        }
+
+        function reenviarLink(id) {
+            const gestante = gestantes.find(g => g.id === id);
+            if (!gestante) return;
+            
+            gestante.dataUltimoContato = new Date().toISOString().slice(0, 16).replace('T', ' ');
+            
+            addActivity(`🔄 Link reenviado para ${gestante.nome}`);
+            renderGestantes();
+            
+            alert(`✅ Link reenviado para ${gestante.nome}!`);
+        }
+
+        function verDetalhes(id) {
+            const gestante = gestantes.find(g => g.id === id);
+            if (!gestante) return;
+            
+            alert(`📋 Detalhes de ${gestante.nome}\n\n` +
+                  `Telefone: ${gestante.telefone}\n` +
+                  `Endereço: ${gestante.endereco}\n` +
+                  `IG: ${gestante.ig}\n` +
+                  `Status: ${gestante.status}\n` +
+                  `Último contato: ${gestante.dataUltimoContato || 'Nenhum'}`);
+        }
+
+        function ligar(id) {
+            const gestante = gestantes.find(g => g.id === id);
+            if (!gestante) return;
+            
+            addActivity(`📞 Ligação realizada para ${gestante.nome}`);
+            alert(`📞 Iniciando ligação para ${gestante.nome}...\n${gestante.telefone}`);
+        }
+
+        // ========== Modais ==========
+        function openNovoLinkModal() {
+            document.getElementById('modalNovoLink').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function openEnviarLoteModal() {
+            const loteList = document.getElementById('loteList');
+            loteList.innerHTML = '';
+            
+            gestantes.filter(g => g.status === 'pendente').forEach(g => {
+                const item = document.createElement('div');
+                item.style.cssText = 'padding: 0.75rem; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.75rem;';
+                item.innerHTML = `
+                    <input type="checkbox" id="check-${g.id}" style="width: 18px; height: 18px;" checked />
+                    <label for="check-${g.id}" style="flex: 1; cursor: pointer;">
+                        <strong>${g.nome}</strong><br>
+                        <span style="font-size: 0.8125rem; color: var(--gray-light);">${g.telefone}</span>
+                    </label>
+                `;
+                loteList.appendChild(item);
+            });
+            
+            document.getElementById('modalEnviarLote').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function gerarLink() {
+            const nome = document.getElementById('nomeGestante').value;
+            const telefone = document.getElementById('telefoneGestante').value;
+            
+            if (!nome || !telefone) {
+                alert('⚠️ Preencha todos os campos!');
+                return;
+            }
+            
+            const link = `https://pro.saude.rj.gov.br/triagem/${Date.now()}`;
+            navigator.clipboard.writeText(link);
+            
+            addActivity(`🔗 Link gerado para ${nome}`);
+            alert(`✅ Link gerado e copiado!\n\n${link}`);
+            closeModal('modalNovoLink');
+        }
+
+        function gerarEEnviar() {
+            const nome = document.getElementById('nomeGestante').value;
+            const telefone = document.getElementById('telefoneGestante').value;
+            
+            if (!nome || !telefone) {
+                alert('⚠️ Preencha todos os campos!');
+                return;
+            }
+            
+            addActivity(`📤 Link gerado e enviado para ${nome}`);
+            alert(`✅ Link gerado e enviado via WhatsApp para:\n\n${nome}\n${telefone}`);
+            closeModal('modalNovoLink');
+        }
+
+        function enviarEmLote() {
+            const checkboxes = document.querySelectorAll('#loteList input[type="checkbox"]:checked');
+            const count = checkboxes.length;
+            
+            if (count === 0) {
+                alert('⚠️ Selecione pelo menos uma gestante!');
+                return;
+            }
+            
+            checkboxes.forEach(cb => {
+                const id = parseInt(cb.id.replace('check-', ''));
+                const gestante = gestantes.find(g => g.id === id);
+                if (gestante) {
+                    gestante.status = 'enviado';
+                    gestante.linkEnviado = true;
+                    gestante.dataUltimoContato = new Date().toISOString().slice(0, 16).replace('T', ' ');
+                }
+            });
+            
+            addActivity(`📤 ${count} links enviados em lote`);
+            renderGestantes();
+            updateStats();
+            closeModal('modalEnviarLote');
+            
+            alert(`✅ ${count} links enviados com sucesso!`);
+        }
+
+        // ========== Event Listeners ==========
+        searchInput.addEventListener('input', renderGestantes);
+
+        document.getElementById('modalNovoLink').addEventListener('click', (e) => {
+            if (e.target.id === 'modalNovoLink') closeModal('modalNovoLink');
+        });
+
+        document.getElementById('modalEnviarLote').addEventListener('click', (e) => {
+            if (e.target.id === 'modalEnviarLote') closeModal('modalEnviarLote');
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal('modalNovoLink');
+                closeModal('modalEnviarLote');
+            }
+        });
+
+        // ========== Inicialização ==========
+        renderGestantes();
+        updateStats();
+        renderActivity();
+        addActivity('🟢 Sistema iniciado');
+    </script>
+</body>
+</html>

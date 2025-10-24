@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRO - Triagem Pré-Natal</title>
+    <meta name="description" content="Triagem obstétrica online - Secretaria de Saúde RJ">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #0f172a;
+            --panel: #1e293b;
+            --gray: #64748b;
+            --gray-light: #94a3b8;
+            --gray-lighter: #cbd5e1;
+            --white: #ffffff;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0c1324 0%, var(--dark) 100%);
+            color: var(--white);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        /* Container */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 2rem 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .header-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-subtitle {
+            font-size: 1rem;
+            color: var(--gray-lighter);
+        }
+
+        .gov-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6ee7b7;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+        }
+
+        .progress-step {
+            color: var(--gray-lighter);
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+            border-radius: 4px;
+            transition: width 0.4s ease;
+        }
+
+        /* Card */
+        .card {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .step-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--white);
+        }
+
+        .step-description {
+            font-size: 0.9375rem;
+            color: var(--gray-lighter);
+            margin-bottom: 2rem;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 0.75rem;
+        }
+
+        .form-label.required::after {
+            content: ' *';
+            color: var(--danger);
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 0.875rem;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--white);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: var(--gray);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Radio/Checkbox Options */
+        .options-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(15, 23, 42, 0.6);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-card:hover {
+            border-color: rgba(255, 255, 255, 0.25);
+            background: rgba(30, 41, 59, 0.6);
+        }
+
+        .option-card.selected {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        .option-radio,
+        .option-checkbox {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .option-content {
+            flex: 1;
+        }
+
+        .option-label {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 0.25rem;
+        }
+
+        .option-desc {
+            font-size: 0.875rem;
+            color: var(--gray-lighter);
+        }
+
+        /* Alert Box */
+        .alert {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .alert-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert.info {
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .alert.warning {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .alert.danger {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .alert.success {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--gray-lighter);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Result Screen */
+        .result-card {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .result-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .result-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .result-subtitle {
+            font-size: 1.125rem;
+            color: var(--gray-lighter);
+            margin-bottom: 2rem;
+        }
+
+        .result-box {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .result-box-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .result-box-content {
+            font-size: 0.9375rem;
+            color: var(--gray-lighter);
+            line-height: 1.7;
+        }
+
+        .result-box-content ul {
+            margin-left: 1.25rem;
+            margin-top: 0.5rem;
+        }
+
+        .result-box-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Risk Badge */
+        .risk-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            border-radius: 20px;
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .risk-badge.critical {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+            border: 2px solid var(--danger);
+        }
+
+        .risk-badge.high {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+            border: 2px solid var(--warning);
+        }
+
+        .risk-badge.moderate {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .risk-badge.low {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+            border: 2px solid var(--success);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            font-size: 0.875rem;
+            color: var(--gray);
+        }
+
+        /* Hidden class */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            body {
+                padding: 0.75rem;
+            }
+
+            .header {
+                padding: 1.5rem 0.5rem;
+            }
+
+            .header-title {
+                font-size: 1.5rem;
+            }
+
+            .card {
+                padding: 1.5rem;
+            }
+
+            .step-title {
+                font-size: 1.25rem;
+            }
+
+            .button-group {
+                flex-direction: column-reverse;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="gov-badge">🏛️ Governo do Estado do Rio de Janeiro</div>
+            <div class="logo">🩺</div>
+            <h1 class="header-title">Triagem Pré-Natal</h1>
+            <p class="header-subtitle">Plataforma de Regulação Otimizada (PRO)</p>
+        </header>
+
+        <!-- Progress Bar -->
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-label">
+                <span class="progress-step" id="progressText">Passo 1 de 5</span>
+                <span id="progressPercent">20%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 20%;"></div>
+            </div>
+        </div>
+
+        <!-- Step 1: Boas-vindas -->
+        <div class="card" id="step1">
+            <h2 class="step-title">Bem-vinda! 👋</h2>
+            <p class="step-description">
+                Este formulário vai nos ajudar a entender melhor sua situação e direcionar você 
+                para o atendimento adequado.
+            </p>
+
+            <div class="alert info">
+                <span class="alert-icon">ℹ️</span>
+                <div class="alert-content">
+                    <strong>Importante:</strong> Responda com sinceridade. Suas informações são 
+                    confidenciais e protegidas pela LGPD.
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label required">Qual é o seu nome completo?</label>
+                <input 
+                    type="text" 
+                    id="nomeCompleto"
+                    class="form-input" 
+                    placeholder="Digite seu nome completo"
+                />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label required">Qual é a sua idade?</label>
+                <input 
+                    type="number" 
+                    id="idade"
+                    class="form-input" 
+                    placeholder="Digite sua idade"
+                    min="10"
+                    max="60"
+                />
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="nextStep(1)">
+                    Continuar →
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 2: Dados Gestacionais -->
+        <div class="card hidden" id="step2">
+            <h2 class="step-title">Informações da Gestação 🤰</h2>
+            <p class="step-description">
+                Precisamos saber algumas informações sobre sua gestação.
+            </p>
+
+            <div class="form-group">
+                <label class="form-label required">Você sabe quantas semanas de gestação tem?</label>
+                <div class="options-group">
+                    <label class="option-card" onclick="selectOption('semanas', 'sim')">
+                        <input type="radio" name="sabeSemanas" value="sim" class="option-radio" />
+                        <div class="option-content">
+                            <div class="option-label">Sim, eu sei</div>
+                        </div>
+                    </label>
+                    <label class="option-card" onclick="selectOption('semanas', 'nao')">
+                        <input type="radio" name="sabeSemanas" value="nao" class="option-radio" />
+                        <div class="option-content">
+                            <div class="option-label">Não sei ao certo</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group hidden" id="semanasInput">
+                <label class="form-label required">Quantas semanas?</label>
+                <input 
+                    type="number" 
+                    id="semanas"
+                    class="form-input" 
+                    placeholder="Ex: 28"
+                    min="1"
+                    max="42"
+                />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label required">Esta é sua primeira gestação?</label>
+                <div class="options-group">
+                    <label class="option-card" onclick="selectOption('primeira', 'sim')">
+                        <input type="radio" name="primeiraGestacao" value="sim" class="option-radio" />
+                        <div class="option-content">
+                            <div class="option-label">Sim, é minha primeira</div>
+                        </div>
+                    </label>
+                    <label class="option-card" onclick="selectOption('primeira', 'nao')">
+                        <input type="radio" name="primeiraGestacao" value="nao" class="option-radio" />
+                        <div class="option-content">
+                            <div class="option-label">Não, já tive outras gestações</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-secondary" onclick="prevStep(2)">
+                    ← Voltar
+                </button>
+                <button class="btn btn-primary" onclick="nextStep(2)">
+                    Continuar →
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 3: Sintomas -->
+        <div class="card hidden" id="step3">
+            <h2 class="step-title">Sintomas Atuais ⚕️</h2>
+            <p class="step-description">
+                Marque todos os sintomas que você está sentindo agora:
+            </p>
+
+            <div class="alert warning">
+                <span class="alert-icon">⚠️</span>
+                <div class="alert-content">
+                    <strong>Atenção:</strong> Se tiver sintomas graves, procure atendimento 
+                    imediato na emergência mais próxima.
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Selecione os sintomas (se houver):</label>
+                <div class="options-group">
+                    <label class="option-card">
+                        <input type="checkbox" name="sintomas" value="sangramento" class="option-checkbox" />
+                        <div class="option-content">
+                            <div class="option-label">🩸 Sangramento vaginal</div>
+                            <div class="option-desc">Qualquer quantidade de sangramento</div>
+                        </div>
+                    </label>
+                    <label class="option-card">
+                        <input type="checkbox" name="sintomas" value="dor-intensa" class="option-checkbox" />
+                        <div class="option-content">
+                            <div class="option-label">😣 Dor abdominal intensa</div>
+                            <div class="option-desc">Dor forte que não passa</div>
+                        </div>
+                    </label>
+                    <label class="option-card">
+                        <input type="checkbox" name="sintomas" value="pressao-alta" class="option-checkbox" />
+                        <div class="option-content">
+                            <div class="option-label">💉 Pressão alta</div>
+                            <div class="option-desc">Medida acima de 140/90</div>
+                        </div>
+                    </label>
+                    <label class="option-card">
+                        <input type="checkbox" name="sintomas" value="cefaleia" class="option-checkbox" />
+                        <div class="option-content">
+                            <div class="option-label">🤕 Dor de cabeça forte</div>
+                            <div class="option-desc">Cefaleia intensa ou persistente</div>
+                        </div>
+                    </label>
+                    <label class="option-card">
+                        <input type="checkbox" name="sintomas" value="visao" class="option-checkbox" />
+                        <div class="option-content">
+                            <div class="option-label">👁️ Problemas de visão</div>
+                            <div class="option-desc">Visão embaçada ou manchas</div>
+                        </div>
+                    </label>
+                    <label class="option-card">
+                        <input type="checkbox" name="sintomas" value="contracao" class="option-checkbox" />
+                        <div class="option-content">
+                            <div class="option-label">🤰 Contrações regulares</div>
+                            <div class="option-desc">Contrações frequentes e ritmadas</div>
+                        </div>
+                    </label>
+                    <label class="option-card">
+                        <input type="checkbox" name="sintomas" value="nenhum" class="option-checkbox" />
+                        <div class="option-content">
+                            <div class="option-label">✅ Não tenho sintomas graves</div>
+                            <div class="option-desc">Apenas consulta de rotina</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-secondary" onclick="prevStep(3)">
+                    ← Voltar
+                </button>
+                <button class="btn btn-primary" onclick="nextStep(3)">
+                    Continuar →
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 4: Histórico Médico -->
+        <div class="card hidden" id="step4">
+            <h2 class="step-title">Histórico de Saúde 📋</h2>
+            <p class="step-description">
+                Informe se você tem alguma das condições abaixo:
+            </p>
+
+            <div class="form-group">
+                <label class="form-label">Condições pré-existentes:</label>
+                <div class="options-group">
+                    <label class="option-card">
+                        <input type="checkbox" name="condicoes" value="diabetes" class="option-checkbox" />
+                        <div class="option-content">
+                            <div class="option-label">Diabetes (gestacional ou pré-existente)</div>
+                        </div>
+                    </label>
+                    <label class="option-card">
+                        <input type="checkbox" name="condicoes" value="hipertensao" class="option-checkbox" />
+                        <div class="option-content">
+                            <div class="option-label">Hipertensão (pressão alta)</div>
+                        </div>
+                    </label>
+                    <label class="option-card">
+                        <input type="checkbox" name="condicoes" value="cardiopatia" class="option-checkbox" />
+                        <div class="option-content">
+                            <div class="option-label">Problemas cardíacos</div>
+                        </div>
+                    </label>
+                    <label class="option-card">
+                        <input type="checkbox" name="condicoes" value="nenhuma" class="option-checkbox" />
+                        <div class="option-content">
+                            <div class="option-label">✅ Não tenho condições pré-existentes</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Informações adicionais (opcional):</label>
+                <textarea 
+                    id="observacoes"
+                    class="form-textarea" 
+                    placeholder="Compartilhe qualquer outra informação relevante sobre sua saúde..."
+                ></textarea>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-secondary" onclick="prevStep(4)">
+                    ← Voltar
+                </button>
+                <button class="btn btn-primary" onclick="nextStep(4)">
+                    Continuar →
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 5: Contato -->
+        <div class="card hidden" id="step5">
+            <h2 class="step-title">Seus Dados de Contato 📞</h2>
+            <p class="step-description">
+                Para finalizarmos, precisamos de seus dados de contato.
+            </p>
+
+            <div class="form-group">
+                <label class="form-label required">Telefone (WhatsApp):</label>
+                <input 
+                    type="tel" 
+                    id="telefone"
+                    class="form-input" 
+                    placeholder="(00) 00000-0000"
+                />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label required">Município:</label>
+                <select id="municipio" class="form-select">
+                    <option value="">Selecione seu município</option>
+                    <option value="Rio de Janeiro">Rio de Janeiro</option>
+                    <option value="Niterói">Niterói</option>
+                    <option value="São Gonçalo">São Gonçalo</option>
+                    <option value="Duque de Caxias">Duque de Caxias</option>
+                    <option value="Nova Iguaçu">Nova Iguaçu</option>
+                    <option value="Outro">Outro município</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Endereço completo:</label>
+                <textarea 
+                    id="endereco"
+                    class="form-textarea" 
+                    placeholder="Rua, número, bairro..."
+                ></textarea>
+            </div>
+
+            <div class="alert info">
+                <span class="alert-icon">🔒</span>
+                <div class="alert-content">
+                    <strong>Privacidade garantida:</strong> Seus dados são protegidos conforme a LGPD 
+                    e serão usados apenas para atendimento médico.
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-secondary" onclick="prevStep(5)">
+                    ← Voltar
+                </button>
+                <button class="btn btn-primary" onclick="finalizarTriagem()">
+                    Finalizar Triagem ✓
+                </button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div class="card hidden" id="stepResult">
+            <div class="result-card">
+                <div class="result-icon" id="resultIcon">✅</div>
+                <h2 class="result-title" id="resultTitle">Triagem Concluída!</h2>
+                <p class="result-subtitle" id="resultSubtitle">Analisamos suas informações</p>
+
+                <div class="risk-badge" id="resultRisk">
+                    <span id="riskIcon">📋</span>
+                    <span id="riskText">Risco Moderado</span>
+                </div>
+
+                <div class="result-box">
+                    <div class="result-box-title">
+                        <span>🏥</span>
+                        <span>Próximos Passos</span>
+                    </div>
+                    <div class="result-box-content" id="resultSteps">
+                        <!-- Conteúdo dinâmico -->
+                    </div>
+                </div>
+
+                <div class="result-box">
+                    <div class="result-box-title">
+                        <span>📍</span>
+                        <span>Unidade Sugerida</span>
+                    </div>
+                    <div class="result-box-content" id="resultUnit">
+                        <strong id="unitName">UBS Centro</strong><br>
+                        <span id="unitAddress">Rua Principal, 123 - Centro</span>
+                    </div>
+                </div>
+
+                <div class="alert success">
+                    <span class="alert-icon">✓</span>
+                    <div class="alert-content">
+                        Seu protocolo: <strong id="protocolo">PRO-2025-001234</strong><br>
+                        Você receberá uma confirmação via WhatsApp em breve.
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="location.reload()" style="width: 100%; margin-top: 1rem;">
+                    Fazer Nova Triagem
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>
+                Secretaria Estadual de Saúde do Rio de Janeiro<br>
+                Dúvidas? Entre em contato: 0800 647 0099
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 5;
+        const formData = {};
+
+        // ========== Navigation ==========
+        function nextStep(step) {
+            if (!validateStep(step)) {
+                return;
+            }
+
+            saveStepData(step);
+            
+            document.getElementById(`step${step}`).classList.add('hidden');
+            currentStep++;
+            document.getElementById(`step${currentStep}`).classList.remove('hidden');
+            
+            updateProgress();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function prevStep(step) {
+            document.getElementById(`step${step}`).classList.add('hidden');
+            currentStep--;
+            document.getElementById(`step${currentStep}`).classList.remove('hidden');
+            
+            updateProgress();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateProgress() {
+            const percent = (currentStep / totalSteps) * 100;
+            document.getElementById('progressFill').style.width = `${percent}%`;
+            document.getElementById('progressText').textContent = `Passo ${currentStep} de ${totalSteps}`;
+            document.getElementById('progressPercent').textContent = `${Math.round(percent)}%`;
+        }
+
+        // ========== Validation ==========
+        function validateStep(step) {
+            switch(step) {
+                case 1:
+                    const nome = document.getElementById('nomeCompleto').value;
+                    const idade = document.getElementById('idade').value;
+                    if (!nome || !idade) {
+                        alert('⚠️ Por favor, preencha todos os campos obrigatórios.');
+                        return false;
+                    }
+                    if (idade < 10 || idade > 60) {
+                        alert('⚠️ Por favor, verifique a idade informada.');
+                        return false;
+                    }
+                    break;
+                case 2:
+                    const sabeSemanas = document.querySelector('input[name="sabeSemanas"]:checked');
+                    const primeiraGestacao = document.querySelector('input[name="primeiraGestacao"]:checked');
+                    if (!sabeSemanas || !primeiraGestacao) {
+                        alert('⚠️ Por favor, responda todas as perguntas.');
+                        return false;
+                    }
+                    break;
+                case 5:
+                    const telefone = document.getElementById('telefone').value;
+                    const municipio = document.getElementById('municipio').value;
+                    if (!telefone || !municipio) {
+                        alert('⚠️ Por favor, preencha telefone e município.');
+                        return false;
+                    }
+                    break;
+            }
+            return true;
+        }
+
+        // ========== Data Collection ==========
+        function saveStepData(step) {
+            switch(step) {
+                case 1:
+                    formData.nome = document.getElementById('nomeCompleto').value;
+                    formData.idade = document.getElementById('idade').value;
+                    break;
+                case 2:
+                    formData.sabeSemanas = document.querySelector('input[name="sabeSemanas"]:checked')?.value;
+                    formData.semanas = document.getElementById('semanas').value;
+                    formData.primeiraGestacao = document.querySelector('input[name="primeiraGestacao"]:checked')?.value;
+                    break;
+                case 3:
+                    const sintomas = [];
+                    document.querySelectorAll('input[name="sintomas"]:checked').forEach(cb => {
+                        sintomas.push(cb.value);
+                    });
+                    formData.sintomas = sintomas;
+                    break;
+                case 4:
+                    const condicoes = [];
+                    document.querySelectorAll('input[name="condicoes"]:checked').forEach(cb => {
+                        condicoes.push(cb.value);
+                    });
+                    formData.condicoes = condicoes;
+                    formData.observacoes = document.getElementById('observacoes').value;
+                    break;
+                case 5:
+                    formData.telefone = document.getElementById('telefone').value;
+                    formData.municipio = document.getElementById('municipio').value;
+                    formData.endereco = document.getElementById('endereco').value;
+                    break;
+            }
+        }
+
+        // ========== UI Interactions ==========
+        function selectOption(type, value) {
+            if (type === 'semanas' && value === 'sim') {
+                document.getElementById('semanasInput').classList.remove('hidden');
+            } else if (type === 'semanas' && value === 'nao') {
+                document.getElementById('semanasInput').classList.add('hidden');
+            }
+        }
+
+        // Add visual feedback for selected cards
+        document.addEventListener('change', (e) => {
+            if (e.target.type === 'radio') {
+                const group = e.target.name;
+                document.querySelectorAll(`input[name="${group}"]`).forEach(input => {
+                    input.closest('.option-card').classList.remove('selected');
+                });
+                e.target.closest('.option-card').classList.add('selected');
+            }
+            if (e.target.type === 'checkbox') {
+                if (e.target.checked) {
+                    e.target.closest('.option-card').classList.add('selected');
+                } else {
+                    e.target.closest('.option-card').classList.remove('selected');
+                }
+            }
+        });
+
+        // ========== Result Generation ==========
+        function finalizarTriagem() {
+            if (!validateStep(5)) return;
+            
+            saveStepData(5);
+
+            // Hide steps, show result
+            document.getElementById('step5').classList.add('hidden');
+            document.getElementById('progressContainer').classList.add('hidden');
+            document.getElementById('stepResult').classList.remove('hidden');
+
+            // Calculate risk level
+            const risk = calculateRisk();
+            displayResult(risk);
+
+            // Simulate sending data
+            console.log('Dados da triagem:', formData);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function calculateRisk() {
+            const sintomas = formData.sintomas || [];
+            const condicoes = formData.condicoes || [];
+
+            // Critical symptoms
+            if (sintomas.includes('sangramento') || sintomas.includes('dor-intensa')) {
+                return 'critical';
+            }
+
+            // High risk symptoms/conditions
+            if (sintomas.includes('pressao-alta') || sintomas.includes('visao') || 
+                condicoes.includes('hipertensao') || condicoes.includes('diabetes')) {
+                return 'high';
+            }
+
+            // Moderate risk
+            if (sintomas.includes('cefaleia') || sintomas.includes('contracao') || 
+                condicoes.includes('cardiopatia')) {
+                return 'moderate';
+            }
+
+            // Low risk
+            return 'low';
+        }
+
+        function displayResult(risk) {
+            const protocolo = `PRO-2025-${String(Math.floor(Math.random() * 999999)).padStart(6, '0')}`;
+            document.getElementById('protocolo').textContent = protocolo;
+
+            let icon, title, subtitle, riskBadge, riskIcon, steps, unit, unitAddr;
+
+            switch(risk) {
+                case 'critical':
+                    icon = '🚨';
+                    title = 'Atenção: Situação Urgente';
+                    subtitle = 'Você precisa de atendimento imediato';
+                    riskBadge = 'Risco Crítico';
+                    riskIcon = '🚨';
+                    document.getElementById('resultRisk').className = 'risk-badge critical';
+                    steps = `
+                        <strong style="color: var(--danger);">⚠️ PROCURE IMEDIATAMENTE:</strong>
+                        <ul>
+                            <li>Dirija-se à emergência obstétrica mais próxima</li>
+                            <li>Ou ligue 192 (SAMU) para ambulância</li>
+                            <li>Não espere - seu caso requer atenção urgente</li>
+                        </ul>
+                    `;
+                    unit = 'Hospital Municipal de Emergência';
+                    unitAddr = 'Av. Central, 1000 - Aberto 24h';
+                    break;
+
+                case 'high':
+                    icon = '⚠️';
+                    title = 'Atenção Necessária';
+                    subtitle = 'Recomendamos atendimento prioritário';
+                    riskBadge = 'Alto Risco';
+                    riskIcon = '⚠️';
+                    document.getElementById('resultRisk').className = 'risk-badge high';
+                    steps = `
+                        <strong>Você foi classificada como prioridade.</strong>
+                        <ul>
+                            <li>Aguarde contato do regulador em até 2 horas</li>
+                            <li>Você será encaminhada para consulta especializada</li>
+                            <li>Mantenha seu telefone disponível</li>
+                        </ul>
+                    `;
+                    unit = 'Maternidade Regional Norte';
+                    unitAddr = 'Rua das Flores, 456 - Zona Norte';
+                    break;
+
+                case 'moderate':
+                    icon = '📋';
+                    title = 'Triagem Concluída';
+                    subtitle = 'Acompanhamento programado';
+                    riskBadge = 'Risco Moderado';
+                    riskIcon = '📋';
+                    document.getElementById('resultRisk').className = 'risk-badge moderate';
+                    steps = `
+                        <strong>Seu caso está sob acompanhamento.</strong>
+                        <ul>
+                            <li>Você receberá agendamento em até 48 horas</li>
+                            <li>Consulta será na unidade básica indicada</li>
+                            <li>Confirmação chegará via WhatsApp</li>
+                        </ul>
+                    `;
+                    unit = 'UBS Vila Nova';
+                    unitAddr = 'Rua Comércio, 789 - Centro';
+                    break;
+
+                default: // low
+                    icon = '✅';
+                    title = 'Triagem Concluída!';
+                    subtitle = 'Pré-natal de rotina';
+                    riskBadge = 'Baixo Risco';
+                    riskIcon = '✅';
+                    document.getElementById('resultRisk').className = 'risk-badge low';
+                    steps = `
+                        <strong>Tudo certo com você!</strong>
+                        <ul>
+                            <li>Seu pré-natal será acompanhado pela UBS</li>
+                            <li>Aguarde agendamento em até 7 dias</li>
+                            <li>Continue os cuidados habituais</li>
+                        </ul>
+                    `;
+                    unit = 'UBS Centro';
+                    unitAddr = 'Rua Principal, 123 - Centro';
+                    break;
+            }
+
+            document.getElementById('resultIcon').textContent = icon;
+            document.getElementById('resultTitle').textContent = title;
+            document.getElementById('resultSubtitle').textContent = subtitle;
+            document.getElementById('riskIcon').textContent = riskIcon;
+            document.getElementById('riskText').textContent = riskBadge;
+            document.getElementById('resultSteps').innerHTML = steps;
+            document.getElementById('unitName').textContent = unit;
+            document.getElementById('unitAddress').textContent = unitAddr;
+        }
+    </script>
+</body>
+</html>
