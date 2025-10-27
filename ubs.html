@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PRO RJ — Painel do Gestor da UBS</title>
+  <meta name="description" content="Visão da UBS: lista de gestantes, riscos, status e unidade sugerida." />
+  
+  <style>
+    /* ================================
+       PRO RJ — Sistema de Design
+       Governo do Estado do Rio de Janeiro
+       ================================ */
+
+    :root {
+      /* Cores Oficiais do Estado do RJ */
+      --azul-rj: #0052A5;
+      --azul-rj-dark: #003A75;
+      --azul-rj-light: #1A6DC1;
+      --verde-rj: #00A859;
+      --amarelo-rj: #FFD100;
+      --branco-rj: #FFFFFF;
+      --cinza-rj-100: #F5F5F5;
+      --cinza-rj-200: #E0E0E0;
+      --cinza-rj-500: #666666;
+      --cinza-rj-700: #333333;
+      
+      /* Cores de Apoio para Saúde */
+      --verde-saude: #00A859;
+      --azul-saude: #0072BC;
+      --laranja-alerta: #FF6B00;
+      --vermelho-urgente: #D32F2F;
+      
+      /* Superfícies */
+      --surface: #FFFFFF;
+      --surface-alt: #F8F9FA;
+      --border: #E0E0E0;
+    }
+
+    /* Reset & Base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background-color: var(--cinza-rj-100);
+      color: var(--cinza-rj-700);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Header RJ */
+    header {
+      background: linear-gradient(135deg, var(--azul-rj) 0%, var(--azul-rj-dark) 100%);
+      color: white;
+      padding: 1rem 0;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .logo-icon {
+      font-size: 24px;
+    }
+
+    .logo-text {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .login-btn {
+      background: var(--amarelo-rj);
+      color: var(--azul-rj-dark);
+      border: none;
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    /* Main Content */
+    .wrap { 
+      max-width: 1200px; 
+      margin: 84px auto 64px; 
+      padding: 0 16px; 
+    }
+
+    .card { 
+      background: var(--surface); 
+      border: 1px solid var(--border); 
+      border-radius: 12px; 
+      box-shadow: 0 8px 24px rgba(0,0,0,.06); 
+    }
+
+    .card-body { 
+      padding: 16px; 
+    }
+
+    .title { 
+      font-size: 1.25rem; 
+      font-weight: 800; 
+      color: var(--azul-rj-dark); 
+    }
+
+    .muted { 
+      color: var(--cinza-rj-500); 
+      font-size: .95rem; 
+    }
+
+    /* KPIs */
+    .kpis { 
+      display: grid; 
+      grid-template-columns: 1fr 1fr 1fr 1fr; 
+      gap: 10px; 
+      margin-top: 12px; 
+    }
+
+    .kpi { 
+      background: #fff; 
+      border: 1px solid var(--border); 
+      border-radius: 10px; 
+      padding: 12px; 
+    }
+
+    .kpi h4 { 
+      margin-bottom: 6px; 
+      font-size: .9rem; 
+      color: var(--cinza-rj-500); 
+    }
+
+    .kpi strong { 
+      font-size: 1.2rem; 
+    }
+
+    /* Filters */
+    .filters { 
+      display: grid; 
+      grid-template-columns: 1fr 160px 160px; 
+      gap: 10px; 
+      margin-top: 10px; 
+    }
+
+    .input, .select { 
+      width: 100%; 
+      padding: 10px 12px; 
+      border: 1px solid var(--border); 
+      border-radius: 10px; 
+      background: #fff; 
+    }
+
+    /* Table */
+    .table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      margin-top: 12px; 
+      background: #fff; 
+      border: 1px solid var(--border); 
+      border-radius: 12px; 
+      overflow: hidden; 
+    }
+
+    .table th, .table td { 
+      padding: 10px 12px; 
+      border-bottom: 1px solid var(--border); 
+      text-align: left; 
+    }
+
+    .table th { 
+      background: var(--cinza-rj-200); 
+      color: var(--cinza-rj-700); 
+      font-size: .9rem; 
+    }
+
+    .table tr:last-child td { 
+      border-bottom: 0; 
+    }
+
+    .mono { 
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; 
+    }
+
+    /* Badges */
+    .badge { 
+      padding: 4px 8px; 
+      border-radius: 999px; 
+      font-weight: 700; 
+      font-size: .85rem; 
+      border: 1px solid transparent; 
+      display: inline-block; 
+    }
+
+    .risk-critico { 
+      background: #fecaca; 
+      color: #991b1b; 
+    }
+
+    .risk-alto { 
+      background: #fde68a; 
+      color: #92400e; 
+    }
+
+    .risk-moderado { 
+      background: #dbeafe; 
+      color: #1e3a8a; 
+    }
+
+    .risk-baixo { 
+      background: #dcfce7; 
+      color: #166534; 
+    }
+
+    .status-novo { 
+      background: #e5e7eb; 
+      color: #111827; 
+    }
+
+    .status-encaminhado { 
+      background: #e8f4fc; 
+      color: var(--azul-rj-dark); 
+    }
+
+    .status-ajustado { 
+      background: #fff1d6; 
+      color: #92400e; 
+    }
+
+    .status-recusado { 
+      background: #fee2e2; 
+      color: #991b1b; 
+    }
+
+    /* Empty State */
+    .empty { 
+      text-align: center; 
+      color: var(--cinza-rj-500); 
+      padding: 18px; 
+      border: 1px dashed var(--border); 
+      border-radius: 12px; 
+      background: var(--cinza-rj-100); 
+      margin-top: 12px; 
+    }
+
+    /* Tools */
+    .tools { 
+      display: flex; 
+      gap: 8px; 
+      flex-wrap: wrap; 
+    }
+
+    .btn { 
+      padding: 8px 12px; 
+      border-radius: 8px; 
+      border: 1px solid var(--border); 
+      background: #fff; 
+      cursor: pointer; 
+      font-size: 14px;
+    }
+
+    .btn-ghost { 
+      background: #fff; 
+    }
+
+    .btn-refresh { 
+      background: var(--cinza-rj-200); 
+    }
+
+    .btn-reset { 
+      background: #fef2f2; 
+      color: #991b1b; 
+      border-color: #fecaca; 
+    }
+
+    /* Footer RJ */
+    footer {
+      background: var(--azul-rj-dark);
+      color: white;
+      padding: 20px 0;
+      text-align: center;
+    }
+
+    .footer-bottom {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    @media (max-width: 920px) {
+      .kpis { grid-template-columns: 1fr 1fr; }
+      .filters { grid-template-columns: 1fr 1fr; }
+      .table th:nth-child(5), .table td:nth-child(5) { display: none; }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+      
+      .wrap {
+        margin: 80px auto 40px;
+      }
+      
+      .filters {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header RJ -->
+  <header>
+    <div class="container nav-container">
+      <div class="logo" onclick="location.href='index.html'">
+        <span class="logo-icon">🏥</span>
+        <span class="logo-text">PRO RJ — Gestor UBS</span>
+      </div>
+      <nav class="nav-links">
+        <a href="index.html#sobre">Sobre</a>
+        <a href="index.html#como-funciona">Como funciona</a>
+      </nav>
+      <button class="login-btn" onclick="location.href='index.html'">Voltar ao Início</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- Cabeçalho -->
+    <section class="card">
+      <div class="card-body">
+        <div class="title">Painel do Gestor da UBS - PRO RJ</div>
+        <div class="muted">Sistema do Governo do Estado do Rio de Janeiro. Acompanhe as gestantes da sua unidade: risco, status e encaminhamentos.</div>
+      </div>
+    </section>
+
+    <!-- KPIs -->
+    <section class="kpis">
+      <div class="kpi">
+        <h4>Total de casos</h4>
+        <strong id="kTotal">0</strong>
+      </div>
+      <div class="kpi">
+        <h4>Críticos / Altos</h4>
+        <strong id="kCritAlto">0</strong>
+      </div>
+      <div class="kpi">
+        <h4>Encaminhados</h4>
+        <strong id="kEncaminhados">0</strong>
+      </div>
+      <div class="kpi">
+        <h4>Faltantes (convites)</h4>
+        <strong id="kFaltantes">0</strong>
+      </div>
+    </section>
+
+    <!-- Filtros -->
+    <section class="card" style="margin-top:12px;">
+      <div class="card-body">
+        <div class="title" style="font-size:1.05rem;">Filtros</div>
+        <div class="filters">
+          <input id="fBusca" class="input" placeholder="Buscar por nome, município ou UBS..." />
+          <select id="fRisco" class="select">
+            <option value="">Todos os riscos</option>
+            <option value="Crítico">Crítico</option>
+            <option value="Alto">Alto</option>
+            <option value="Moderado">Moderado</option>
+            <option value="Baixo">Baixo</option>
+          </select>
+          <select id="fStatus" class="select">
+            <option value="">Todos os status</option>
+            <option value="encaminhado">Encaminhado</option>
+            <option value="ajustado">Ajustado</option>
+            <option value="recusado">Recusado</option>
+            <option value="novo">Novo</option>
+          </select>
+        </div>
+        <div class="tools" style="margin-top:10px;">
+          <button class="btn btn-refresh" id="btnRefresh">Atualizar</button>
+          <button class="btn btn-ghost" id="btnLimpar">Limpar filtros</button>
+          <button class="btn btn-reset" id="btnResetDemo" title="Limpa tickets, convites e auditoria">Resetar DEMO</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Lista -->
+    <section class="card" style="margin-top:12px;">
+      <div class="card-body">
+        <div class="title" style="font-size:1.05rem;">Gestantes / Casos</div>
+        <table class="table" id="tbl">
+          <thead>
+            <tr>
+              <th>Gestante</th>
+              <th>Risco</th>
+              <th>Status</th>
+              <th>Unidade Sugerida</th>
+              <th>Tempo fila (min)</th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <!-- linhas renderizadas via JS -->
+          </tbody>
+        </table>
+        <div id="empty" class="empty" style="display:none;">Sem registros para os filtros atuais.</div>
+      </div>
+    </section>
+
+    <!-- Nota -->
+    <section class="card" style="margin-top:12px;">
+      <div class="card-body muted">
+        <strong>Notas do sistema PRO RJ:</strong>
+        <ul style="margin-left: 18px; line-height:1.9;">
+          <li>Os status são inferidos a partir do Log de Auditoria do Copiloto (confirmado, ajustado, recusado).</li>
+          <li>Convites "faltantes" vêm de <span class="mono">pro_rj_invites</span> com status <em>enviado/aberto</em> (não respondidos).</li>
+          <li>Sistema integrado à rede estadual de saúde do Rio de Janeiro.</li>
+          <li>Todos os dados são locais (sem backend), voltados apenas para a demonstração.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer RJ -->
+  <footer>
+    <div class="container footer-bottom">© 2024 Governo do Estado do Rio de Janeiro - PRO RJ</div>
+  </footer>
+
+  <script>
+    // --- Storage helpers ---
+    const readJSON = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
+    const writeJSON = (k, v) => localStorage.setItem(k, JSON.stringify(v));
+
+    // --- Estado bruto ---
+    let tickets = readJSON('pro_rj_tickets', []);
+    let audit = readJSON('pro_rj_audit', []);
+    let invites = readJSON('pro_rj_invites', []);
+
+    // --- Derivar status do ticket a partir do audit ---
+    function deriveStatusMap(audit) {
+      // Considera a última ação por ticket
+      const map = {};
+      audit.forEach(ev => {
+        const id = ev.ticket?.id;
+        if (!id) return;
+        const action = ev.action || '';
+        map[id] = action; // sobrescreve com a última
+      });
+      return map;
+    }
+
+    function statusFromAction(action) {
+      if (!action) return 'novo';
+      if (action.startsWith('✅ Confirmado')) return 'encaminhado';
+      if (action.startsWith('✏️ Unidade ajustada')) return 'ajustado';
+      if (action.startsWith('❌ Recusado')) return 'recusado';
+      return 'novo';
+    }
+
+    // --- Renderização ---
+    function renderKPIs() {
+      const statusMap = deriveStatusMap(audit);
+      
+      const total = tickets.length;
+      const critAlto = tickets.filter(t => t.risco === 'Crítico' || t.risco === 'Alto').length;
+      const encaminhados = tickets.filter(t => statusFromAction(statusMap[t.id]) === 'encaminhado').length;
+      const faltantes = invites.filter(i => i.status === 'enviado' || i.status === 'aberto').length;
+
+      document.getElementById('kTotal').textContent = total;
+      document.getElementById('kCritAlto').textContent = critAlto;
+      document.getElementById('kEncaminhados').textContent = encaminhados;
+      document.getElementById('kFaltantes').textContent = faltantes;
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('tbody');
+      const empty = document.getElementById('empty');
+      const statusMap = deriveStatusMap(audit);
+
+      // Filtros
+      const busca = document.getElementById('fBusca').value.toLowerCase();
+      const riscoFiltro = document.getElementById('fRisco').value;
+      const statusFiltro = document.getElementById('fStatus').value;
+
+      let data = tickets.filter(t => {
+        // Filtro de busca
+        if (busca && !`${t.nome} ${t.ubs} ${t.cidade}`.toLowerCase().includes(busca)) return false;
+        
+        // Filtro de risco
+        if (riscoFiltro && t.risco !== riscoFiltro) return false;
+        
+        // Filtro de status
+        const status = statusFromAction(statusMap[t.id]);
+        if (statusFiltro && status !== statusFiltro) return false;
+        
+        return true;
+      });
+
+      tbody.innerHTML = '';
+      
+      if (data.length === 0) {
+        empty.style.display = 'block';
+        return;
+      }
+      
+      empty.style.display = 'none';
+
+      data.forEach(t => {
+        const status = statusFromAction(statusMap[t.id]);
+        const riskClass = t.risco === 'Crítico' ? 'risk-critico' :
+                         t.risco === 'Alto' ? 'risk-alto' :
+                         t.risco === 'Moderado' ? 'risk-moderado' : 'risk-baixo';
+        const statusClass = `status-${status}`;
+        
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>
+            <div><strong>${t.nome}</strong></div>
+            <div class="muted" style="font-size:0.8rem;">${t.cidade || 'Município não informado'} • ${t.ubs || 'UBS não informada'}</div>
+          </td>
+          <td><span class="badge ${riskClass}">${t.risco}</span></td>
+          <td><span class="badge ${statusClass}">${status}</span></td>
+          <td>${t.unidade}</td>
+          <td>${t.tempoFila || 0}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function resetDemo() {
+      if (!confirm('Deseja resetar TODOS os dados da demonstração PRO RJ?\n\nIsso irá limpar tickets, convites e auditoria.')) return;
+      
+      // Remove apenas as chaves do PRO RJ
+      const prefix = 'pro-rj.';
+      const toRemove = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith(prefix)) {
+          toRemove.push(key);
+        }
+      }
+      toRemove.forEach(key => localStorage.removeItem(key));
+      
+      // Recarrega os dados
+      tickets = [];
+      audit = [];
+      invites = [];
+      
+      renderKPIs();
+      renderTable();
+      alert('Dados da demonstração PRO RJ resetados com sucesso.');
+    }
+
+    // --- Event Listeners ---
+    document.getElementById('btnRefresh').addEventListener('click', () => {
+      tickets = readJSON('pro_rj_tickets', []);
+      audit = readJSON('pro_rj_audit', []);
+      invites = readJSON('pro_rj_invites', []);
+      renderKPIs();
+      renderTable();
+    });
+
+    document.getElementById('btnLimpar').addEventListener('click', () => {
+      document.getElementById('fBusca').value = '';
+      document.getElementById('fRisco').value = '';
+      document.getElementById('fStatus').value = '';
+      renderTable();
+    });
+
+    document.getElementById('btnResetDemo').addEventListener('click', resetDemo);
+
+    document.getElementById('fBusca').addEventListener('input', renderTable);
+    document.getElementById('fRisco').addEventListener('change', renderTable);
+    document.getElementById('fStatus').addEventListener('change', renderTable);
+
+    // --- Inicialização ---
+    renderKPIs();
+    renderTable();
+
+    // Observa mudanças no storage (para atualização em tempo real)
+    window.addEventListener('storage', () => {
+      tickets = readJSON('pro_rj_tickets', []);
+      audit = readJSON('pro_rj_audit', []);
+      invites = readJSON('pro_rj_invites', []);
+      renderKPIs();
+      renderTable();
+    });
+  </script>
+</body>
+</html>

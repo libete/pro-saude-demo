@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PRO — Triagem (Mobile-first, 3 passos)</title>
+  <meta name="description" content="Triagem de gestante em 3 passos com classificação automática e confirmação visual." />
+  <link rel="stylesheet" href="assets/css/global.css" />
+
+  <style>
+    /* Estilo leve específico do fluxo em etapas */
+    .wrap { max-width: 640px; margin: 96px auto 64px; padding: 0 16px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,.06); }
+    .card-body { padding: 20px; }
+    .title { font-size: 1.25rem; font-weight: 700; color: var(--primary-dark); }
+    .muted { color: var(--gray); font-size: .95rem; }
+    .progress { height: 8px; background: var(--sand-300); border-radius: 999px; overflow: hidden; }
+    .progress > div { height: 100%; width: 0; background: linear-gradient(90deg, var(--primary), var(--primary-light)); transition: width .25s ease; }
+    .stepper { display: flex; align-items: center; gap: 8px; font-size: .85rem; color: var(--gray); margin-top: 8px; }
+    .step-dot { width: 8px; height: 8px; border-radius: 999px; background: var(--sand-300); }
+    .step-dot.active { background: var(--primary); }
+    .field { margin-top: 14px; }
+    .field label { display: block; font-weight: 600; font-size: .95rem; margin-bottom: 6px; color: var(--dark); }
+    .input, .select, .textarea {
+      width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px; font-size: 1rem; background: #fff;
+    }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .symptoms { display: grid; grid-template-columns: 1fr; gap: 8px; }
+    .symptoms label { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; background: #fff; }
+    .hint { font-size: .85rem; color: var(--gray); margin-top: 4px; }
+    .actions { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 16px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .btn { padding: 12px 14px; border-radius: 10px; font-weight: 700; border: 0; cursor: pointer; }
+    .btn-primary { background: var(--primary); color:#fff; }
+    .btn-secondary { background: var(--sand-200); color: var(--ink-700); }
+    .badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 999px; font-weight: 700; font-size: .85rem; border: 1px solid transparent; }
+    .crit { background: #fde2e2; color: #b42318; border-color:#fca5a5; }
+    .high { background: #fde4f0; color: #9d174d; border-color:#f9a8d4; }
+    .med  { background: #fff1d6; color: #92400e; border-color:#fcd34d; }
+    .low  { background: #e8f6ef; color: #166534; border-color:#86efac; }
+    .review { background: var(--sand-100); border: 1px dashed var(--border); padding: 12px; border-radius: 10px; }
+    .token { font-size:.8rem; color:var(--gray); margin-top:6px; }
+    .divider { height:1px; background: var(--border); margin: 14px 0; }
+    @media (min-width: 540px) {
+      .symptoms { grid-template-columns: 1fr 1fr; }
+      .actions { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header compacto -->
+  <header>
+    <div class="container nav-container">
+      <div class="logo" onclick="location.href='index.html'">
+        <span class="logo-icon">🩺</span>
+        <span class="logo-text">PRO</span>
+      </div>
+      <nav class="nav-links">
+        <a href="index.html#sobre">Sobre</a>
+        <a href="index.html#como-funciona">Como funciona</a>
+      </nav>
+      <button class="login-btn" onclick="location.href='index.html'">Voltar</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="card">
+      <div class="card-body">
+        <div class="title">Triagem em 3 passos</div>
+        <div class="muted">Leva menos de 3 minutos. Em emergência, procure a unidade mais próxima.</div>
+
+        <!-- Barra de progresso -->
+        <div class="field" aria-hidden="true">
+          <div class="progress"><div id="pgFill" style="width: 0%"></div></div>
+          <div class="stepper">
+            <div id="dot1" class="step-dot active"></div><span>Identificação</span>
+            <span style="margin:0 6px;">›</span>
+            <div id="dot2" class="step-dot"></div><span>Sintomas</span>
+            <span style="margin:0 6px;">›</span>
+            <div id="dot3" class="step-dot"></div><span>Revisão</span>
+          </div>
+        </div>
+
+        <!-- Passo 1 -->
+        <section id="step1" aria-label="Passo 1 — Identificação" style="margin-top:10px;">
+          <div class="field">
+            <label for="nome">Seu nome completo</label>
+            <input id="nome" class="input" type="text" placeholder="Ex.: Ana Maria da Silva" required />
+          </div>
+          <div class="grid-2">
+            <div class="field">
+              <label for="cidade">Cidade</label>
+              <input id="cidade" class="input" type="text" placeholder="Ex.: Rio de Janeiro" required />
+            </div>
+            <div class="field">
+              <label for="ubs">UBS de referência (opcional)</label>
+              <input id="ubs" class="input" type="text" placeholder="Ex.: UBS Centro" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="ig">Idade Gestacional (semanas)</label>
+            <input id="ig" class="input" type="text" placeholder="Ex.: 28 semanas" />
+          </div>
+          <div class="actions">
+            <button class="btn btn-primary" id="toStep2">Continuar</button>
+          </div>
+        </section>
+
+        <!-- Passo 2 -->
+        <section id="step2" aria-label="Passo 2 — Sintomas" style="display:none;">
+          <div class="field">
+            <label>Sintomas atuais</label>
+            <div class="symptoms" id="symptomsList">
+              <!-- críticos -->
+              <label><input type="checkbox" value="Sangramento" data-critical="true" /> Sangramento</label>
+              <label><input type="checkbox" value="Dor forte" data-critical="true" /> Dor forte</label>
+              <label><input type="checkbox" value="Pressão alta" data-critical="true" /> Pressão alta</label>
+              <label><input type="checkbox" value="Convulsão" data-critical="true" /> Convulsão</label>
+              <!-- não críticos -->
+              <label><input type="checkbox" value="Dor de cabeça" /> Dor de cabeça</label>
+              <label><input type="checkbox" value="Inchaço" /> Inchaço</label>
+              <label><input type="checkbox" value="Náusea" /> Náusea</label>
+              <label><input type="checkbox" value="Sem sintomas" /> Sem sintomas</label>
+            </div>
+            <div class="hint">Marque tudo que estiver sentindo agora.</div>
+          </div>
+          <div class="row actions">
+            <button class="btn btn-secondary" id="back1">Voltar</button>
+            <button class="btn btn-primary" id="toStep3">Revisar</button>
+          </div>
+        </section>
+
+        <!-- Passo 3 -->
+        <section id="step3" aria-label="Passo 3 — Revisão e Envio" style="display:none;">
+          <div class="review" id="reviewBox">
+            <!-- preenchido por JS -->
+          </div>
+          <div class="token" id="tokenInfo">Token: —</div>
+          <div class="divider"></div>
+          <div class="row actions">
+            <button class="btn btn-secondary" id="back2">Voltar</button>
+            <button class="btn btn-primary" id="finish">Finalizar Triagem</button>
+          </div>
+        </section>
+
+        <!-- Confirmação -->
+        <section id="done" style="display:none;">
+          <h2 style="margin-top:8px;">Triagem enviada com sucesso ✅</h2>
+          <p class="muted" id="resumoOk">—</p>
+          <p id="riscoBadge" class="badge low" style="margin:8px 0;">Risco —</p>
+          <p><strong>Unidade sugerida: </strong><span id="unidadeOk">—</span></p>
+          <div class="actions" style="margin-top: 14px;">
+            <a class="btn btn-secondary" href="index.html">Voltar ao início</a>
+            <a class="btn btn-primary" href="sisreg-mock.html">Ver ambiente do regulador (demo)</a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container footer-bottom">© PRO Demo — para fins de demonstração</div>
+  </footer>
+
+  <script>
+    // ---------- Helpers de storage ----------
+    const readJSON = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
+    const writeJSON = (k, v) => localStorage.setItem(k, JSON.stringify(v));
+    const uuid = () => 'PRO-' + Date.now() + '-' + Math.random().toString(36).slice(2,8).toUpperCase();
+
+    // ---------- Token e convite ----------
+    const params = new URLSearchParams(location.search);
+    const token = params.get('t') || '';
+    const tokenInfo = document.getElementById('tokenInfo');
+    tokenInfo.textContent = token ? `Token: ${token}` : 'Sem token (acesso direto)';
+
+    // ---------- Motor (fallback) ----------
+    // Espera-se window.ProMotor.classificar({ sintomas, ig, cidade }) -> { risco, unidade, score }
+    if (!window.ProMotor) {
+      window.ProMotor = {
+        classificar: ({ sintomas = [], ig = '', cidade = '' }) => {
+          const crits = ['Sangramento', 'Dor forte', 'Pressão alta', 'Convulsão'];
+          const meds  = ['Dor de cabeça', 'Inchaço', 'Náusea'];
+          const hasC = sintomas.some(s => crits.includes(s));
+          const hasM = sintomas.some(s => meds.includes(s));
+          let risco = 'low';
+          if (hasC) risco = 'crit';
+          else if (hasM) risco = 'med';
+          let unidade = 'UBS de Referência';
+          if (risco === 'crit') unidade = 'Hospital Central';
+          else if (risco === 'high') unidade = 'Maternidade São José';
+          else if (risco === 'med') unidade = 'UBS Bairro Novo';
+          if (cidade?.toLowerCase().includes('niter')) unidade = 'Maternidade São José';
+          return { risco, unidade, score: hasC ? 95 : hasM ? 65 : 35 };
+        }
+      };
+    }
+
+    // ---------- Estado do formulário ----------
+    const state = {
+      nome: '', cidade: '', ubs: '', ig: '', sintomas: [],
+      cls: { risco: 'low', unidade: 'UBS de Referência', score: 0 }
+    };
+
+    // ---------- Navegação de passos ----------
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+    const step3 = document.getElementById('step3');
+    const done  = document.getElementById('done');
+    const pgFill = document.getElementById('pgFill');
+    const dots = [document.getElementById('dot1'), document.getElementById('dot2'), document.getElementById('dot3')];
+
+    function setStep(n) {
+      [step1, step2, step3, done].forEach(s => s.style.display = 'none');
+      if (n === 1) step1.style.display = 'block';
+      if (n === 2) step2.style.display = 'block';
+      if (n === 3) step3.style.display = 'block';
+      if (n === 4) done.style.display = 'block';
+      const pct = n === 1 ? 10 : n === 2 ? 55 : n === 3 ? 95 : 100;
+      pgFill.style.width = pct + '%';
+      dots.forEach((d, i) => d.classList.toggle('active', i < n));
+    }
+
+    // ---------- Passo 1 -> 2 ----------
+    document.getElementById('toStep2').addEventListener('click', () => {
+      state.nome = document.getElementById('nome').value.trim();
+      state.cidade = document.getElementById('cidade').value.trim();
+      state.ubs = document.getElementById('ubs').value.trim();
+      state.ig = document.getElementById('ig').value.trim();
+      if (!state.nome || !state.cidade) { alert('Preencha Nome e Cidade.'); return; }
+      setStep(2);
+    });
+
+    // ---------- Passo 2 navegação ----------
+    document.getElementById('back1').addEventListener('click', () => setStep(1));
+    document.getElementById('toStep3').addEventListener('click', () => {
+      const checked = Array.from(document.querySelectorAll('#symptomsList input:checked')).map(e => e.value);
+      // Se “Sem sintomas” estiver marcado, remove outros por consistência
+      const sem = checked.includes('Sem sintomas') ? ['Sem sintomas'] : checked;
+      state.sintomas = sem;
+
+      // Classificar já na revisão
+      state.cls = window.ProMotor.classificar({ sintomas: state.sintomas, ig: state.ig, cidade: state.cidade });
+
+      // Preencher revisão
+      const review = document.getElementById('reviewBox');
+      review.innerHTML = `
+        <div><strong>Nome:</strong> ${state.nome}</div>
+        <div><strong>Cidade:</strong> ${state.cidade}</div>
+        <div><strong>UBS:</strong> ${state.ubs || 'Não informado'}</div>
+        <div><strong>IG:</strong> ${state.ig || 'Não informado'}</div>
+        <div><strong>Sintomas:</strong> ${state.sintomas.length ? state.sintomas.join(' • ') : 'Não informado'}</div>
+        <div class="divider"></div>
+        <div><strong>Classificação (preview):</strong>
+          <span class="badge ${state.cls.risco === 'crit' ? 'crit' : state.cls.risco === 'high' ? 'high' : state.cls.risco === 'med' ? 'med' : 'low'}">
+            ${state.cls.risco === 'crit' ? 'Crítico' : state.cls.risco === 'high' ? 'Alto' : state.cls.risco === 'med' ? 'Moderado' : 'Baixo'}
+          </span>
+        </div>
+        <div><strong>Unidade sugerida:</strong> ${state.cls.unidade}</div>
+      `;
+      setStep(3);
+    });
+    document.getElementById('back2').addEventListener('click', () => setStep(2));
+
+    // ---------- Finalizar ----------
+    document.getElementById('finish').addEventListener('click', () => {
+      // Criar ticket
+      const tickets = readJSON('pro_demo_tickets', []);
+      const id = uuid();
+      const novo = {
+        id,
+        token: token || null,
+        nome: state.nome,
+        cidade: state.cidade,
+        ubs: state.ubs || 'Não informado',
+        ig: state.ig || 'Não informado',
+        sintomas: state.sintomas,
+        risco: state.cls.risco,
+        unidade: state.cls.unidade,
+        score: state.cls.score,
+        createdAt: new Date().toISOString(),
+        status: 'Aguardando'
+      };
+      tickets.push(novo);
+      writeJSON('pro_demo_tickets', tickets);
+
+      // Atualiza convite (se houver)
+      const invites = readJSON('pro_demo_invites', []);
+      const idx = invites.findIndex(i => i.token === token);
+      if (idx > -1) {
+        invites[idx].status = 'respondido';
+        invites[idx].respondedAt = new Date().toISOString();
+        writeJSON('pro_demo_invites', invites);
+      }
+
+      // Sinal ao "plugin" (demo)
+      localStorage.setItem('pro_demo_last_new_ticket', id);
+
+      // Feedback final
+      const map = { crit: ['Crítico', 'crit'], high: ['Alto', 'high'], med: ['Moderado', 'med'], low: ['Baixo', 'low'] };
+      const [lbl, cls] = map[state.cls.risco] || map.low;
+      document.getElementById('resumoOk').textContent = `Obrigada, ${state.nome}. Sua triagem foi registrada.`;
+      const riscoBadge = document.getElementById('riscoBadge');
+      riscoBadge.className = `badge ${cls}`;
+      riscoBadge.textContent = `Nível de risco: ${lbl}`;
+      document.getElementById('unidadeOk').textContent = state.cls.unidade;
+
+      setStep(4);
+      // (opcional) reforço para sintomas críticos
+      if (state.cls.risco === 'crit') {
+        setTimeout(() => alert('Atenção: sintomas críticos informados. Se houver piora, procure atendimento imediato.'), 200);
+      }
+    });
+
+    // ---------- Hidratar cidade/ubs via convite (se existir) ----------
+    (function hydrateFromInvite(){
+      if (!token) return;
+      const invites = readJSON('pro_demo_invites', []);
+      const inv = invites.find(i => i.token === token);
+      if (inv && inv.prefill) {
+        document.getElementById('cidade').value = inv.prefill.cidade || '';
+        document.getElementById('ubs').value = inv.prefill.ubs || '';
+      }
+    })();
+
+    // Iniciar no passo 1
+    setStep(1);
+  </script>
+</body>
+</html>

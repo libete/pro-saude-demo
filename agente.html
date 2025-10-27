@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal do Agente | PRO RJ</title>
+  
+  <style>
+    /* ================================
+       PRO RJ — Sistema de Design
+       Governo do Estado do Rio de Janeiro
+       ================================ */
+
+    :root {
+      /* Cores Oficiais do Estado do RJ */
+      --azul-rj: #0052A5;
+      --azul-rj-dark: #003A75;
+      --azul-rj-light: #1A6DC1;
+      --verde-rj: #00A859;
+      --amarelo-rj: #FFD100;
+      --branco-rj: #FFFFFF;
+      --cinza-rj-100: #F5F5F5;
+      --cinza-rj-200: #E0E0E0;
+      --cinza-rj-500: #666666;
+      --cinza-rj-700: #333333;
+      
+      /* Cores de Apoio para Saúde */
+      --verde-saude: #00A859;
+      --azul-saude: #0072BC;
+      --laranja-alerta: #FF6B00;
+      --vermelho-urgente: #D32F2F;
+      
+      /* Superfícies */
+      --surface: #FFFFFF;
+      --surface-alt: #F8F9FA;
+      --border: #E0E0E0;
+    }
+
+    /* Reset & Base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background-color: var(--cinza-rj-100);
+      color: var(--cinza-rj-700);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Header RJ */
+    .header {
+      background: linear-gradient(135deg, var(--azul-rj) 0%, var(--azul-rj-dark) 100%);
+      color: white;
+      padding: 1rem 0;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-title h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+    }
+
+    /* Main Content */
+    .main-content {
+      padding: 2rem 0;
+      min-height: calc(100vh - 120px);
+      margin-top: 80px;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      margin-bottom: 1.5rem;
+    }
+
+    .card-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-alt);
+    }
+
+    .card-header h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--azul-rj-dark);
+    }
+
+    .card-body {
+      padding: 1.5rem;
+    }
+
+    .card-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border);
+      background: var(--surface-alt);
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--cinza-rj-500);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--azul-rj);
+    }
+
+    /* Form Elements */
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--cinza-rj-700);
+    }
+
+    .form-input, .form-select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      background: var(--surface);
+    }
+
+    .text-xs {
+      font-size: 0.75rem;
+    }
+
+    .text-gray-500 {
+      color: var(--cinza-rj-500);
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background: var(--azul-rj);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--azul-rj-dark);
+    }
+
+    .btn-secondary {
+      background: var(--cinza-rj-200);
+      color: var(--cinza-rj-700);
+    }
+
+    .btn-success {
+      background: var(--verde-rj);
+      color: white;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--cinza-rj-700);
+    }
+
+    .btn-sm {
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+    }
+
+    .btn-lg {
+      padding: 1rem 2rem;
+      font-size: 1.1rem;
+    }
+
+    /* Link Display */
+    .link-display {
+      display: none;
+      margin-top: 1rem;
+      padding: 1rem;
+      background: var(--cinza-rj-100);
+      border-radius: 0.5rem;
+      border: 1px solid var(--border);
+    }
+
+    .link-display.show {
+      display: block;
+    }
+
+    .link-url {
+      font-family: 'Courier New', monospace;
+      font-size: 0.875rem;
+      color: var(--azul-rj);
+      word-break: break-all;
+      padding: 0.75rem;
+      background: white;
+      border-radius: 0.375rem;
+      border: 1px solid var(--cinza-rj-200);
+      margin: 0.75rem 0;
+    }
+
+    /* Filters */
+    .filters {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    /* Table */
+    .table-container {
+      overflow-x: auto;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .table th,
+    .table td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .table th {
+      background: var(--surface-alt);
+      font-weight: 600;
+      color: var(--cinza-rj-700);
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.375rem 0.75rem;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.75rem;
+      border: 1px solid transparent;
+    }
+
+    .badge-success {
+      background: #e8f6ef;
+      color: #166534;
+      border-color: #86efac;
+    }
+
+    .badge-warning {
+      background: #fff1d6;
+      color: #92400e;
+      border-color: #fcd34d;
+    }
+
+    .badge-danger {
+      background: #fde2e2;
+      color: #b42318;
+      border-color: #fca5a5;
+    }
+
+    .badge-info {
+      background: #e8f4fc;
+      color: var(--azul-rj);
+      border-color: #cfe7fb;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: var(--cinza-rj-500);
+    }
+
+    .empty-state-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Admin Actions */
+    .admin-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Utilities */
+    .mb-4 {
+      margin-bottom: 1.5rem;
+    }
+
+    .mt-3 {
+      margin-top: 0.75rem;
+    }
+
+    @media (max-width: 768px) {
+      .filters {
+        flex-direction: column;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+      }
+      
+      .table td {
+        font-size: 0.75rem;
+      }
+
+      .header-content {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="header-content">
+        <div class="header-title">
+          <h1>🩺 Portal do Agente de Saúde - PRO RJ</h1>
+        </div>
+        <div class="header-user">
+          <span id="agentName">Carregando...</span>
+          <span>|</span>
+          <span id="ubsName">...</span>
+          <button class="btn btn-sm btn-secondary" onclick="logout()">Sair</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="container">
+      
+      <!-- KPIs -->
+      <div class="stats-grid" id="kpiContainer">
+        <div class="stat-card">
+          <div class="stat-label">Links Gerados</div>
+          <div class="stat-value" id="kpiTotal">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Taxa de Abertura</div>
+          <div class="stat-value" id="kpiAbertura">0%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Taxa de Conclusão</div>
+          <div class="stat-value" id="kpiConclusao">0%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Tempo Médio</div>
+          <div class="stat-value" id="kpiTempo">0min</div>
+        </div>
+      </div>
+
+      <!-- Card: Gerar Link -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h3>📲 Gerar Link de Triagem</h3>
+        </div>
+        <div class="card-body">
+          <form id="formGerarLink" onsubmit="gerarLink(event)">
+            <div class="form-group">
+              <label class="form-label">UBS</label>
+              <input type="text" class="form-input" id="inputUbs" readonly>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Nome da Gestante (opcional)</label>
+              <input 
+                type="text" 
+                class="form-input" 
+                id="inputNome" 
+                placeholder="Ex: Maria S."
+                maxlength="30"
+              >
+              <small class="text-xs text-gray-500">Use apenas nome e inicial. Ex: "Maria S."</small>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Canal de Envio</label>
+              <select class="form-select" id="inputCanal">
+                <option value="whatsapp">📱 WhatsApp</option>
+                <option value="sms">📧 SMS</option>
+              </select>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-lg">
+              Gerar Link de Triagem
+            </button>
+          </form>
+          
+          <!-- Link gerado -->
+          <div id="linkDisplay" class="link-display">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <strong>✅ Link gerado com sucesso!</strong>
+            </div>
+            <div class="link-url" id="linkUrl"></div>
+            <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+              <button class="btn btn-primary" onclick="copiarLink()">
+                📋 Copiar Link
+              </button>
+              <button class="btn btn-success" onclick="abrirWhatsApp()">
+                📱 Abrir WhatsApp
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: Minhas Triagens -->
+      <div class="card">
+        <div class="card-header">
+          <h3>📊 Minhas Triagens</h3>
+        </div>
+        <div class="card-body">
+          
+          <!-- Filtros -->
+          <div class="filters">
+            <div>
+              <select class="form-select" id="filterStatus" onchange="aplicarFiltros()">
+                <option value="all">Todos os status</option>
+                <option value="NAO_ABERTO">⏳ Não abertos</option>
+                <option value="EM_PROGRESSO">🔄 Em progresso</option>
+                <option value="CONCLUIDO">✅ Concluídos</option>
+                <option value="VENCEU">⏰ Vencidos</option>
+              </select>
+            </div>
+            <div>
+              <select class="form-select" id="filterPeriodo" onchange="aplicarFiltros()">
+                <option value="all">Todo período</option>
+                <option value="hoje">Hoje</option>
+                <option value="semana">Esta semana</option>
+                <option value="mes">Este mês</option>
+              </select>
+            </div>
+            <button class="btn btn-outline" onclick="limparFiltros()">
+              🔄 Limpar Filtros
+            </button>
+          </div>
+          
+          <!-- Tabela -->
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Token</th>
+                  <th>Status</th>
+                  <th>Criado em</th>
+                  <th>Último Evento</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="tabelaLinks">
+                <!-- Preenchido via JS -->
+              </tbody>
+            </table>
+          </div>
+          
+          <div id="emptyState" class="empty-state" style="display: none;">
+            <div class="empty-state-icon">📭</div>
+            <p>Nenhuma triagem encontrada</p>
+            <button class="btn btn-primary mt-3" onclick="limparFiltros()">
+              Ver todas as triagens
+            </button>
+          </div>
+          
+        </div>
+        
+        <!-- Admin Actions (somente para demo) -->
+        <div class="card-footer">
+          <small class="text-gray-600">Ações de demonstração:</small>
+          <div class="admin-actions">
+            <button class="btn btn-sm btn-outline" onclick="ProData.populateMockData(); carregarDados();">
+              🎲 Popular com 20 registros
+            </button>
+            <button class="btn btn-sm btn-secondary" onclick="ProData.resetDemo()">
+              🔄 Reset Demo
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    // ================================
+    // PRO RJ - Mock Data e Funções
+    // ================================
+
+    const ProData = {
+      // Lista de UBS do Rio de Janeiro
+      UBS_LIST: [
+        { id: 'ubs-rio-centro', nome: 'UBS Centro - Rio de Janeiro' },
+        { id: 'ubs-copacabana', nome: 'UBS Copacabana - Rio de Janeiro' },
+        { id: 'ubs-tijuca', nome: 'UBS Tijuca - Rio de Janeiro' },
+        { id: 'ubs-niteroi-centro', nome: 'UBS Centro - Niterói' },
+        { id: 'ubs-sg-vista-alegre', nome: 'UBS Vista Alegre - São Gonçalo' },
+        { id: 'ubs-duque-caxias', nome: 'UBS Centro - Duque de Caxias' },
+        { id: 'ubs-nova-iguacu', nome: 'UBS Centro - Nova Iguaçu' }
+      ],
+
+      LINK_STATUS: {
+        NAO_ABERTO: 'NAO_ABERTO',
+        EM_PROGRESSO: 'EM_PROGRESSO',
+        CONCLUIDO: 'CONCLUIDO',
+        VENCEU: 'VENCEU'
+      },
+
+      // Agente atual
+      getCurrentAgent() {
+        const agent = localStorage.getItem('pro_rj_current_agent');
+        return agent ? JSON.parse(agent) : null;
+      },
+
+      loginAgent(nome, ubsId) {
+        const ubs = this.UBS_LIST.find(u => u.id === ubsId);
+        const agent = {
+          id: 'agent-' + Date.now(),
+          nome: nome,
+          ubsId: ubsId,
+          ubsNome: ubs ? ubs.nome : 'UBS não encontrada'
+        };
+        localStorage.setItem('pro_rj_current_agent', JSON.stringify(agent));
+        return agent;
+      },
+
+      logoutAgent() {
+        localStorage.removeItem('pro_rj_current_agent');
+      },
+
+      // Gerenciamento de Links
+      createLink(nomeOpc, canal) {
+        const agent = this.getCurrentAgent();
+        if (!agent) throw new Error('Agente não logado');
+
+        const links = this.getAgentLinks(agent.id);
+        const token = 'RJ-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+        
+        const link = {
+          id: 'link-' + Date.now(),
+          token: token,
+          agentId: agent.id,
+          nomeOpc: nomeOpc,
+          canal: canal,
+          ubsId: agent.ubsId,
+          status: this.LINK_STATUS.NAO_ABERTO,
+          createdAt: Date.now(),
+          lastEvent: 'LINK_GERADO',
+          events: [
+            {
+              type: 'LINK_GERADO',
+              timestamp: Date.now(),
+              data: { canal: canal }
+            }
+          ]
+        };
+
+        links.push(link);
+        localStorage.setItem('pro_rj_links', JSON.stringify(links));
+        return link;
+      },
+
+      getAgentLinks(agentId) {
+        const links = localStorage.getItem('pro_rj_links');
+        return links ? JSON.parse(links).filter(link => link.agentId === agentId) : [];
+      },
+
+      addLinkEvent(token, eventType) {
+        const links = JSON.parse(localStorage.getItem('pro_rj_links') || '[]');
+        const link = links.find(l => l.token === token);
+        
+        if (link) {
+          link.lastEvent = eventType;
+          link.events.push({
+            type: eventType,
+            timestamp: Date.now()
+          });
+
+          // Atualiza status baseado no evento
+          if (eventType === 'LINK_ABERTO') {
+            link.status = this.LINK_STATUS.EM_PROGRESSO;
+          } else if (eventType === 'TRIAGEM_CONCLUIDA') {
+            link.status = this.LINK_STATUS.CONCLUIDO;
+          }
+
+          localStorage.setItem('pro_rj_links', JSON.stringify(links));
+        }
+      },
+
+      resendLink(token) {
+        this.addLinkEvent(token, 'REENVIO_' + (Math.floor(Math.random() * 3) + 1));
+      },
+
+      // Utilitários
+      getStatusBadgeClass(status) {
+        const classes = {
+          'NAO_ABERTO': 'badge-info',
+          'EM_PROGRESSO': 'badge-warning',
+          'CONCLUIDO': 'badge-success',
+          'VENCEU': 'badge-danger'
+        };
+        return classes[status] || 'badge-info';
+      },
+
+      formatStatus(status) {
+        const statusMap = {
+          'NAO_ABERTO': '⏳ Não aberto',
+          'EM_PROGRESSO': '🔄 Em progresso',
+          'CONCLUIDO': '✅ Concluído',
+          'VENCEU': '⏰ Vencido'
+        };
+        return statusMap[status] || status;
+      },
+
+      formatDate(timestamp) {
+        return new Date(timestamp).toLocaleString('pt-BR');
+      },
+
+      copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+          this.showToast('✅ Link copiado!');
+        }).catch(() => {
+          // Fallback
+          const textArea = document.createElement('textarea');
+          textArea.value = text;
+          document.body.appendChild(textArea);
+          textArea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textArea);
+          this.showToast('✅ Link copiado!');
+        });
+      },
+
+      showToast(message) {
+        alert(message); // Simples alert para demo
+      },
+
+      calculateKPIs(agentId) {
+        const links = this.getAgentLinks(agentId);
+        const total = links.length;
+        
+        const abertos = links.filter(l => l.status !== this.LINK_STATUS.NAO_ABERTO).length;
+        const concluidos = links.filter(l => l.status === this.LINK_STATUS.CONCLUIDO).length;
+        
+        const taxaAbertura = total > 0 ? Math.round((abertos / total) * 100) : 0;
+        const taxaConversao = total > 0 ? Math.round((concluidos / total) * 100) : 0;
+        
+        // Tempo médio simulado
+        const tempoMedio = total > 0 ? Math.round(Math.random() * 30 + 5) : 0;
+        
+        return {
+          total,
+          taxaAbertura,
+          taxaConversao,
+          tempoMedio
+        };
+      },
+
+      // Demo functions
+      populateMockData() {
+        const agent = this.getCurrentAgent();
+        if (!agent) return;
+
+        const nomes = ['Ana S.', 'Maria L.', 'Joana P.', 'Carla M.', 'Fernanda R.', 'Patrícia T.', 'Juliana F.', 'Amanda C.'];
+        const links = [];
+
+        for (let i = 0; i < 20; i++) {
+          const statuses = Object.values(this.LINK_STATUS);
+          const status = statuses[Math.floor(Math.random() * statuses.length)];
+          const events = ['LINK_GERADO', 'LINK_COPIADO', 'WHATSAPP_ABERTO', 'LINK_ABERTO', 'TRIAGEM_INICIADA'];
+          const lastEvent = events[Math.floor(Math.random() * events.length)];
+
+          links.push({
+            id: 'mock-link-' + i,
+            token: 'RJ-MOCK-' + (i + 1).toString().padStart(3, '0'),
+            agentId: agent.id,
+            nomeOpc: Math.random() > 0.3 ? nomes[Math.floor(Math.random() * nomes.length)] : null,
+            canal: 'whatsapp',
+            ubsId: agent.ubsId,
+            status: status,
+            createdAt: Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000, // Últimos 7 dias
+            lastEvent: lastEvent
+          });
+        }
+
+        // Combinar com links existentes
+        const existingLinks = this.getAgentLinks(agent.id);
+        const allLinks = [...existingLinks, ...links];
+        localStorage.setItem('pro_rj_links', JSON.stringify(allLinks));
+      },
+
+      resetDemo() {
+        const agent = this.getCurrentAgent();
+        if (agent) {
+          // Manter apenas o agente, limpar links
+          const emptyLinks = [];
+          localStorage.setItem('pro_rj_links', JSON.stringify(emptyLinks));
+        }
+      }
+    };
+
+    // ================================
+    // Aplicação Principal
+    // ================================
+
+    let currentAgent = null;
+    let currentLink = null;
+    let allLinks = [];
+    let filteredLinks = [];
+
+    // ==================== INICIALIZAÇÃO ====================
+    
+    function init() {
+      // Verifica se está logado
+      currentAgent = ProData.getCurrentAgent();
+      
+      if (!currentAgent) {
+        // Redireciona para login mock (por enquanto, cria um agente automaticamente)
+        mostrarLoginModal();
+        return;
+      }
+      
+      // Atualiza header
+      document.getElementById('agentName').textContent = currentAgent.nome;
+      document.getElementById('ubsName').textContent = currentAgent.ubsNome;
+      document.getElementById('inputUbs').value = currentAgent.ubsNome;
+      
+      // Carrega dados
+      carregarDados();
+    }
+    
+    function mostrarLoginModal() {
+      const nome = prompt('Digite seu nome:');
+      if (!nome) {
+        window.location.href = 'index.html';
+        return;
+      }
+      
+      const ubsOptions = ProData.UBS_LIST.map((u, i) => `${i + 1}. ${u.nome}`).join('\n');
+      const ubsIndex = prompt(`Escolha sua UBS no RJ:\n${ubsOptions}\n\nDigite o número:`);
+      
+      if (!ubsIndex || ubsIndex < 1 || ubsIndex > ProData.UBS_LIST.length) {
+        window.location.href = 'index.html';
+        return;
+      }
+      
+      const ubs = ProData.UBS_LIST[parseInt(ubsIndex) - 1];
+      currentAgent = ProData.loginAgent(nome, ubs.id);
+      
+      init();
+    }
+    
+    function logout() {
+      if (confirm('Deseja sair?')) {
+        ProData.logoutAgent();
+        window.location.href = 'index.html';
+      }
+    }
+
+    // ==================== GERAR LINK ====================
+    
+    function gerarLink(event) {
+      event.preventDefault();
+      
+      const nome = document.getElementById('inputNome').value.trim();
+      const canal = document.getElementById('inputCanal').value;
+      
+      try {
+        currentLink = ProData.createLink(nome || null, canal);
+        
+        // Mostra o link gerado
+        const baseUrl = window.location.origin + window.location.pathname.replace('agente.html', '');
+        const fullUrl = `${baseUrl}triagem.html?t=${currentLink.token}&ubs=${currentLink.ubsId}`;
+        
+        document.getElementById('linkUrl').textContent = fullUrl;
+        document.getElementById('linkDisplay').classList.add('show');
+        
+        // Limpa form
+        document.getElementById('inputNome').value = '';
+        
+        // Atualiza dados
+        carregarDados();
+        
+        ProData.showToast('✅ Link gerado com sucesso!');
+      } catch (error) {
+        alert('❌ Erro ao gerar link: ' + error.message);
+      }
+    }
+    
+    function copiarLink() {
+      const linkText = document.getElementById('linkUrl').textContent;
+      ProData.copyToClipboard(linkText);
+      
+      // Registra evento
+      if (currentLink) {
+        ProData.addLinkEvent(currentLink.token, 'LINK_COPIADO');
+      }
+    }
+    
+    function abrirWhatsApp() {
+      const linkText = document.getElementById('linkUrl').textContent;
+      const nome = currentLink.nomeOpc || 'gestante';
+      const mensagem = `Olá! Segue o link para você fazer a triagem obstétrica do PRO RJ:\n\n${linkText}\n\nQualquer dúvida, estou à disposição!`;
+      
+      // Mock - abre WhatsApp Web (sem número real)
+      const encoded = encodeURIComponent(mensagem);
+      window.open(`https://wa.me/?text=${encoded}`, '_blank');
+      
+      // Registra evento
+      if (currentLink) {
+        ProData.addLinkEvent(currentLink.token, 'WHATSAPP_ABERTO');
+      }
+      
+      ProData.showToast('📱 WhatsApp aberto!');
+    }
+
+    // ==================== CARREGAR DADOS ====================
+    
+    function carregarDados() {
+      // Busca links do agente
+      allLinks = ProData.getAgentLinks(currentAgent.id);
+      allLinks.sort((a, b) => b.createdAt - a.createdAt); // Mais recentes primeiro
+      
+      // Aplica filtros
+      aplicarFiltros();
+      
+      // Atualiza KPIs
+      atualizarKPIs();
+    }
+    
+    function aplicarFiltros() {
+      const statusFilter = document.getElementById('filterStatus').value;
+      const periodoFilter = document.getElementById('filterPeriodo').value;
+      
+      filteredLinks = allLinks.filter(link => {
+        // Filtro de status
+        if (statusFilter !== 'all' && link.status !== statusFilter) {
+          return false;
+        }
+        
+        // Filtro de período
+        if (periodoFilter !== 'all') {
+          const now = Date.now();
+          const linkDate = link.createdAt;
+          
+          if (periodoFilter === 'hoje') {
+            const today = new Date().setHours(0, 0, 0, 0);
+            if (linkDate < today) return false;
+          } else if (periodoFilter === 'semana') {
+            const weekAgo = now - (7 * 24 * 60 * 60 * 1000);
+            if (linkDate < weekAgo) return false;
+          } else if (periodoFilter === 'mes') {
+            const monthAgo = now - (30 * 24 * 60 * 60 * 1000);
+            if (linkDate < monthAgo) return false;
+          }
+        }
+        
+        return true;
+      });
+      
+      renderizarTabela();
+    }
+    
+    function limparFiltros() {
+      document.getElementById('filterStatus').value = 'all';
+      document.getElementById('filterPeriodo').value = 'all';
+      aplicarFiltros();
+    }
+    
+    function renderizarTabela() {
+      const tbody = document.getElementById('tabelaLinks');
+      const emptyState = document.getElementById('emptyState');
+      
+      if (filteredLinks.length === 0) {
+        tbody.innerHTML = '';
+        emptyState.style.display = 'block';
+        return;
+      }
+      
+      emptyState.style.display = 'none';
+      
+      tbody.innerHTML = filteredLinks.map(link => `
+        <tr>
+          <td>${link.nomeOpc || '<em>Anônimo</em>'}</td>
+          <td><code style="font-size: 0.75rem;">${link.token}</code></td>
+          <td>
+            <span class="badge ${ProData.getStatusBadgeClass(link.status)}">
+              ${ProData.formatStatus(link.status)}
+            </span>
+          </td>
+          <td>${ProData.formatDate(link.createdAt)}</td>
+          <td style="font-size: 0.75rem;">${formatarEvento(link.lastEvent)}</td>
+          <td>
+            <div class="action-buttons">
+              ${link.status !== ProData.LINK_STATUS.CONCLUIDO ? 
+                `<button class="btn btn-sm btn-outline" onclick="reenviarLink('${link.token}')">
+                  🔄 Reenviar
+                </button>` : 
+                '<span class="text-xs text-gray-500">-</span>'
+              }
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+    
+    function formatarEvento(evento) {
+      const eventos = {
+        'LINK_GERADO': '🔗 Link gerado',
+        'LINK_COPIADO': '📋 Link copiado',
+        'WHATSAPP_ABERTO': '📱 WhatsApp aberto',
+        'LINK_ABERTO': '👁️ Link aberto',
+        'TRIAGEM_INICIADA': '📝 Triagem iniciada',
+        'TRIAGEM_CONCLUIDA': '✅ Triagem concluída',
+        'REENVIO_1': '🔄 1º reenvio',
+        'REENVIO_2': '🔄 2º reenvio',
+        'REENVIO_3': '⚠️ 3º reenvio',
+        'TOKEN_EXPIRADO': '⏰ Token expirado'
+      };
+      
+      return eventos[evento] || evento;
+    }
+    
+    function atualizarKPIs() {
+      const kpis = ProData.calculateKPIs(currentAgent.id);
+      
+      document.getElementById('kpiTotal').textContent = kpis.total;
+      document.getElementById('kpiAbertura').textContent = kpis.taxaAbertura + '%';
+      document.getElementById('kpiConclusao').textContent = kpis.taxaConversao + '%';
+      document.getElementById('kpiTempo').textContent = kpis.tempoMedio + 'min';
+    }
+
+    // ==================== AÇÕES ====================
+    
+    function reenviarLink(token) {
+      if (!confirm('Deseja reenviar este link?')) return;
+      
+      try {
+        ProData.resendLink(token);
+        carregarDados();
+        ProData.showToast('✅ Link reenviado!');
+      } catch (error) {
+        alert('❌ Erro: ' + error.message);
+      }
+    }
+
+    // ==================== EXECUÇÃO ====================
+    
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

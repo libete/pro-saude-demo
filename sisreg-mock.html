@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SISREG Mock — PRO Copiloto</title>
+  <link rel="stylesheet" href="assets/css/global.css" />
+  <style>
+    body { background: var(--sand-100); }
+    .wrap { max-width: 1200px; margin: 80px auto 64px; padding: 0 16px; }
+
+    .banner {
+      background: var(--light-green);
+      border: 1px solid #86efac;
+      color: #166534;
+      padding: 16px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .banner .btn { background: #166534; color: #fff; }
+
+    .copiloto-sidebar {
+      position: fixed;
+      top: 0; right: -420px;
+      width: 400px; height: 100vh;
+      background: #fff;
+      box-shadow: -4px 0 24px rgba(0,0,0,.15);
+      transition: right .3s ease;
+      display: flex; flex-direction: column;
+      z-index: 999;
+    }
+    .copiloto-sidebar.active { right: 0; }
+    .copiloto-header {
+      padding: 16px;
+      background: var(--primary);
+      color: #fff;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .copiloto-body {
+      padding: 16px;
+      overflow-y: auto;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .ticket {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .ticket .head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .badge {
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: .85rem;
+    }
+    .risk-critico { background: #fecaca; color: #991b1b; }
+    .risk-alto { background: #fde68a; color: #92400e; }
+    .risk-moderado { background: #dbeafe; color: #1e3a8a; }
+    .risk-baixo { background: #dcfce7; color: #166534; }
+    .actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+    .actions .btn { padding: 8px 10px; border-radius: 8px; font-size: .85rem; }
+    .btn-confirm { background: var(--primary); color: #fff; }
+    .btn-adjust { background: var(--sand-200); }
+    .btn-reject { background: #fee2e2; color: #991b1b; }
+    .btn-details { background: #f1f5f9; }
+    .muted { color: var(--gray); font-size: .9rem; }
+    .log {
+      margin-top: 20px;
+      background: #f9fafb;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+    .log pre { font-family: monospace; font-size: .85rem; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container nav-container">
+    <div class="logo" onclick="location.href='index.html'">
+      <span class="logo-icon">🩺</span>
+      <span class="logo-text">SISREG Mock</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- Banner de estação habilitada -->
+  <div class="banner">
+    <div>
+      <strong>✅ PRO Copiloto habilitado nesta estação</strong><br/>
+      <span class="muted">Você pode ativar o copiloto e visualizar a fila de tickets priorizada por risco.</span>
+    </div>
+    <div style="display:flex; gap:8px;">
+      <button id="btnAtivar" class="btn">Ativar PRO</button>
+      <button id="btnAbrir" class="btn btn-secondary">Abrir Copiloto</button>
+    </div>
+  </div>
+
+  <section class="log" id="auditLog">
+    <strong>📜 Log de Auditoria</strong>
+    <pre id="logOutput">(vazio)</pre>
+  </section>
+</main>
+
+<!-- Copiloto -->
+<div class="copiloto-sidebar" id="sidebar">
+  <div class="copiloto-header">
+    <span>🤖 Copiloto PRO</span>
+    <button onclick="toggleSidebar()" style="background:none;border:none;color:#fff;font-size:1.5rem;">×</button>
+  </div>
+  <div class="copiloto-body" id="ticketList">
+    <!-- Tickets renderizados aqui -->
+  </div>
+</div>
+
+<script>
+  const readJSON = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
+  const writeJSON = (k, v) => localStorage.setItem(k, JSON.stringify(v));
+
+  let tickets = readJSON('pro_demo_tickets', []);
+  let audit = readJSON('pro_demo_audit', []);
+
+  // Se não houver tickets mock, cria alguns
+  if (!tickets.length) {
+    tickets = [
+      { id: 'T1', nome: 'Maria Silva', risco: 'Crítico', tempoFila: 25, unidade: 'Maternidade A', sintomas: ['Sangramento'], status: 'novo' },
+      { id: 'T2', nome: 'Ana Souza', risco: 'Alto', tempoFila: 45, unidade: 'Hospital Municipal', sintomas: ['Pressão alta'], status: 'novo' },
+      { id: 'T3', nome: 'Joana Lima', risco: 'Moderado', tempoFila: 15, unidade: 'UBS Bairro Novo', sintomas: ['Dor leve'], status: 'novo' },
+    ];
+    writeJSON('pro_demo_tickets', tickets);
+  }
+
+  function renderTickets() {
+    const list = document.getElementById('ticketList');
+    list.innerHTML = '';
+
+    // ordena por criticidade e tempo
+    const ordem = { 'Crítico': 1, 'Alto': 2, 'Moderado': 3, 'Baixo': 4 };
+    const data = tickets.slice().sort((a, b) => ordem[a.risco] - ordem[b.risco] || b.tempoFila - a.tempoFila);
+
+    data.forEach(t => {
+      const div = document.createElement('div');
+      div.className = 'ticket';
+      const riskClass = t.risco === 'Crítico' ? 'risk-critico' :
+                        t.risco === 'Alto' ? 'risk-alto' :
+                        t.risco === 'Moderado' ? 'risk-moderado' : 'risk-baixo';
+      div.innerHTML = `
+        <div class="head">
+          <strong>${t.nome}</strong>
+          <span class="badge ${riskClass}">${t.risco}</span>
+        </div>
+        <div class="muted">${t.tempoFila} min em fila • ${t.unidade}</div>
+        <div class="actions">
+          <button class="btn btn-confirm" data-act="confirmar" data-id="${t.id}">✅ Confirmar</button>
+          <button class="btn btn-adjust" data-act="ajustar" data-id="${t.id}">✏️ Ajustar</button>
+          <button class="btn btn-reject" data-act="recusar" data-id="${t.id}">❌ Recusar</button>
+          <button class="btn btn-details" data-act="detalhes" data-id="${t.id}">📎 Detalhes</button>
+        </div>
+      `;
+      list.appendChild(div);
+    });
+  }
+
+  function logAction(action, ticket) {
+    const entry = { ts: new Date().toISOString(), action, ticket };
+    audit.push(entry);
+    writeJSON('pro_demo_audit', audit);
+    renderLog();
+  }
+
+  function renderLog() {
+    const el = document.getElementById('logOutput');
+    if (!audit.length) {
+      el.textContent = '(vazio)';
+      return;
+    }
+    el.textContent = audit.map(a => `[${new Date(a.ts).toLocaleString('pt-BR')}] ${a.action} — ${a.ticket.nome} (${a.ticket.risco})`).join('\n');
+  }
+
+  // Eventos
+  document.getElementById('btnAtivar').addEventListener('click', () => {
+    alert('✅ Estação pareada com sucesso (simulação).');
+  });
+
+  document.getElementById('btnAbrir').addEventListener('click', () => {
+    toggleSidebar(true);
+  });
+
+  document.getElementById('ticketList').addEventListener('click', (e) => {
+    const act = e.target?.dataset?.act;
+    if (!act) return;
+    const id = e.target.dataset.id;
+    const t = tickets.find(x => x.id === id);
+    if (!t) return;
+
+    if (act === 'confirmar') {
+      logAction('✅ Confirmado via RPA', t);
+      alert(`Encaminhado para ${t.unidade} (simulado)`);
+    }
+    if (act === 'ajustar') {
+      const nova = prompt('Informe nova unidade de destino:', t.unidade);
+      if (nova) {
+        t.unidade = nova;
+        writeJSON('pro_demo_tickets', tickets);
+        logAction(`✏️ Unidade ajustada para ${nova}`, t);
+        renderTickets();
+      }
+    }
+    if (act === 'recusar') {
+      const motivo = prompt('Motivo da recusa:');
+      logAction(`❌ Recusado (${motivo || 'sem motivo'})`, t);
+    }
+    if (act === 'detalhes') {
+      alert(`📎 Sintomas: ${t.sintomas.join(', ')}\nUnidade sugerida: ${t.unidade}`);
+    }
+  });
+
+  function toggleSidebar(force) {
+    const el = document.getElementById('sidebar');
+    if (typeof force === 'boolean') {
+      el.classList.toggle('active', force);
+    } else {
+      el.classList.toggle('active');
+    }
+  }
+
+  renderTickets();
+  renderLog();
+</script>
+
+</body>
+</html>
