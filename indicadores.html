@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Painel de Impacto – PRO</title>
+<style>
+  :root {
+    --bg: #f4f4f5;
+    --surface: #ffffff;
+    --ink: #111827;
+    --muted: #6b7280;
+    --accent: #2563eb;
+    --ok: #16a34a;
+    --warn: #f97316;
+    --radius-lg: 20px;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    background: radial-gradient(circle at top, #ffffff 0%, #f4f4f5 38%, #eceef0 100%);
+    font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    margin: 0;
+    padding: 36px 16px 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+
+  .shell {
+    width: min(1100px, 100%);
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  header h1 {
+    font-size: clamp(1.6rem, 2.1vw, 1.95rem);
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+
+  header p {
+    margin: 4px 0 0 0;
+    color: var(--muted);
+    max-width: 680px;
+  }
+
+  .tagline {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(37, 99, 235, 0.1);
+    color: #1d4ed8;
+    padding: 3px 12px 4px;
+    border-radius: 9999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 14px;
+  }
+
+  .kpi-card {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 14px 14px 12px;
+    box-shadow: 0 16px 32px rgba(15, 23, 42, 0.03);
+    border: 1px solid rgba(15, 23, 42, 0.03);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-height: 120px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.06);
+  }
+
+  .kpi-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent) 0%, rgba(37, 99, 235, 0.1) 100%);
+  }
+
+  .kpi-card small {
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-size: 0.65rem;
+    color: var(--muted);
+  }
+
+  .kpi-card h2 {
+    font-size: 2.1rem;
+    margin: 0;
+    font-weight: 700;
+  }
+
+  .kpi-meta {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    font-size: 0.7rem;
+    color: var(--muted);
+  }
+
+  .badge-ok {
+    background: rgba(22, 163, 74, 0.12);
+    color: #166534;
+    padding: 2px 8px 3px;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-weight: 600;
+  }
+
+  .kpi-desc {
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  .panel {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    padding: 16px 16px 10px;
+    box-shadow: 0 18px 34px rgba(15,23,42,0.04);
+    border: 1px solid rgba(15, 23, 42, 0.02);
+  }
+
+  .panel-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+
+  .panel-title h3 {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+
+  .mini {
+    font-size: 0.68rem;
+    color: var(--muted);
+  }
+
+  .chart-container {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 14px;
+    padding: 20px 10px 10px;
+    margin-top: 10px;
+    position: relative;
+    height: 250px;
+  }
+
+  .legend {
+    display: flex;
+    gap: 14px;
+    margin-top: 12px;
+    justify-content: center;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  .dot-blue { 
+    width: 10px; 
+    height: 10px; 
+    background: #60a5fa; 
+    border-radius: 50%; 
+  }
+
+  .dot-green { 
+    width: 10px; 
+    height: 10px; 
+    background: #34d399; 
+    border-radius: 50%; 
+  }
+
+  footer {
+    margin-top: 18px;
+    font-size: 0.68rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* Novos estilos adicionados */
+  .controls {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+
+  .period-btn {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 0.75rem;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .period-btn.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+
+  .chart-canvas {
+    width: 100%;
+    height: 100%;
+  }
+
+  .trend-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.7rem;
+    margin-left: 8px;
+  }
+
+  .trend-up {
+    color: var(--ok);
+  }
+
+  .trend-down {
+    color: var(--warn);
+  }
+
+  @media (max-width: 768px) {
+    body {
+      padding: 24px 12px 40px;
+    }
+
+    .kpi-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .panel-title {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .controls {
+      justify-content: center;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="tagline">Indicadores que comprovam política pública</div>
+      <h1>Painel de Impacto da PRO</h1>
+      <p>Indicadores auditáveis e comparáveis que demonstram transformação real: decisões mais rápidas, regulação mais justa, gestão mais eficiente e processos mais transparentes.</p>
+    </header>
+
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <small>Tempo de Decisão do Regulador</small>
+        <h2>28 min</h2>
+        <div class="kpi-meta">
+          <span class="badge-ok">meta ≤ 30 min</span>
+          <span>antes: 3–5 h</span>
+          <span class="trend-indicator trend-down">▼ 92%</span>
+        </div>
+        <div class="kpi-desc">Reduzimos o tempo médio de decisão regulatória (clínica e administrativa).</div>
+      </div>
+
+      <div class="kpi-card">
+        <small>Acurácia da Priorização Clínica</small>
+        <h2>96%</h2>
+        <div class="kpi-meta">
+          <span class="badge-ok">meta ≥ 95%</span>
+          <span>antes: 70%</span>
+          <span class="trend-indicator trend-up">▲ 37%</span>
+        </div>
+        <div class="kpi-desc">Aumentamos a precisão na priorização de gestantes de alto risco com uso dos critérios MEOWS automatizados.</div>
+      </div>
+
+      <div class="kpi-card">
+        <small>Eficiência da Rede Obstétrica</small>
+        <h2>-25%</h2>
+        <div class="kpi-meta">
+          <span class="badge-ok">meta -20%</span>
+          <span>deslocamentos</span>
+          <span class="trend-indicator trend-down">▼ 25%</span>
+        </div>
+        <div class="kpi-desc">Reduzimos deslocamentos e internações evitáveis, otimizando a eficiência da rede assistencial.</div>
+      </div>
+
+      <div class="kpi-card">
+        <small>Transparência e Auditoria</small>
+        <h2>98%</h2>
+        <div class="kpi-meta">
+          <span class="badge-ok">meta ≥ 98%</span>
+          <span>trilha completa</span>
+          <span class="trend-indicator trend-up">▲ 5%</span>
+        </div>
+        <div class="kpi-desc">Garantimos decisões com rastreabilidade completa e justificativa pública verificável.</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">
+        <h3>Evolução mensal do tempo médio de regulação obstétrica</h3>
+        <span class="mini">Fonte: Painel PRO / SES-RJ • atualização mensal</span>
+      </div>
+      
+      <div class="controls">
+        <button class="period-btn active" data-period="6m">Últimos 6 meses</button>
+        <button class="period-btn" data-period="12m">Últimos 12 meses</button>
+        <button class="period-btn" data-period="24m">Últimos 24 meses</button>
+      </div>
+
+      <div class="chart-container">
+        <canvas id="trendChart" class="chart-canvas"></canvas>
+      </div>
+
+      <div class="legend">
+        <div class="legend-item">
+          <span class="dot-blue"></span>
+          <span>Tempo médio observado</span>
+        </div>
+        <div class="legend-item">
+          <span class="dot-green"></span>
+          <span>Meta estabelecida pela PRO</span>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <strong>Fontes:</strong> Ministério da Saúde – <em>Manual de Gestação de Alto Risco (2012)</em>, Rede Cegonha; Tribunal de Contas da União – <em>Referencial de Governança Pública (2021)</em>.<br>
+      <strong>Observação:</strong> valores simulados. Na versão final, serão substituídos pelos dados do piloto (T3) e do relatório de impacto (T4).<br><br>
+      <strong>PRO – Plataforma de Regulação Otimizada</strong> | Libète – Agência de Tecnologias Humanas | SES-RJ – CPSI 001/2025
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Dados simulados para o gráfico
+    const chartData = {
+      '6m': {
+        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+        actual: [45, 38, 32, 30, 29, 28],
+        target: [40, 38, 35, 33, 31, 30]
+      },
+      '12m': {
+        labels: ['Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez', 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+        actual: [65, 58, 52, 48, 45, 42, 45, 38, 32, 30, 29, 28],
+        target: [60, 55, 50, 45, 42, 40, 40, 38, 35, 33, 31, 30]
+      },
+      '24m': {
+        labels: ['Jul 2022', 'Jan 2023', 'Jul 2023', 'Jan 2024', 'Jul 2024', 'Jan 2025'],
+        actual: [180, 120, 85, 65, 45, 28],
+        target: [150, 110, 80, 60, 40, 30]
+      }
+    };
+
+    // Configuração do gráfico
+    let chart;
+    const ctx = document.getElementById('trendChart').getContext('2d');
+    
+    function createChart(period) {
+      const data = chartData[period];
+      
+      if (chart) {
+        chart.destroy();
+      }
+      
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: data.labels,
+          datasets: [
+            {
+              label: 'Tempo médio observado',
+              data: data.actual,
+              borderColor: '#60a5fa',
+              backgroundColor: 'rgba(96, 165, 250, 0.1)',
+              borderWidth: 2,
+              tension: 0.4,
+              fill: true
+            },
+            {
+              label: 'Meta estabelecida pela PRO',
+              data: data.target,
+              borderColor: '#34d399',
+              backgroundColor: 'rgba(52, 211, 153, 0.1)',
+              borderWidth: 2,
+              borderDash: [5, 5],
+              tension: 0.4,
+              fill: true
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              mode: 'index',
+              intersect: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: false,
+              min: 0,
+              max: period === '24m' ? 200 : 70,
+              grid: {
+                color: 'rgba(0, 0, 0, 0.05)'
+              },
+              ticks: {
+                callback: function(value) {
+                  return value + ' min';
+                }
+              }
+            },
+            x: {
+              grid: {
+                display: false
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Inicializar gráfico
+    createChart('6m');
+
+    // Controles de período
+    document.querySelectorAll('.period-btn').forEach(button => {
+      button.addEventListener('click', function() {
+        document.querySelectorAll('.period-btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        this.classList.add('active');
+        
+        const period = this.getAttribute('data-period');
+        createChart(period);
+      });
+    });
+
+    // Animar números dos KPIs
+    function animateValue(element, start, end, duration) {
+      let startTimestamp = null;
+      const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        const value = Math.floor(progress * (end - start) + start);
+        element.textContent = value;
+        if (progress < 1) {
+          window.requestAnimationFrame(step);
+        }
+      };
+      window.requestAnimationFrame(step);
+    }
+
+    // Observar quando os elementos entram na viewport
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const kpiValue = entry.target.querySelector('h2');
+          const currentValue = kpiValue.textContent;
+          
+          // Extrair o valor numérico do KPI
+          let numericValue;
+          if (currentValue.includes('%')) {
+            numericValue = parseInt(currentValue.replace('%', ''));
+          } else if (currentValue.includes('-')) {
+            numericValue = parseInt(currentValue.replace('-', ''));
+          } else {
+            numericValue = parseInt(currentValue);
+          }
+          
+          // Animar apenas se for um número válido
+          if (!isNaN(numericValue)) {
+            // Determinar se é um valor positivo ou negativo
+            const isNegative = currentValue.includes('-');
+            const finalValue = isNegative ? -numericValue : numericValue;
+            
+            // Animar do 0 ao valor final
+            animateValue(kpiValue, 0, finalValue, 1500);
+          }
+          
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    // Observar todos os cards de KPI
+    document.querySelectorAll('.kpi-card').forEach(card => {
+      observer.observe(card);
+    });
+  </script>
+</body>
+</html>
