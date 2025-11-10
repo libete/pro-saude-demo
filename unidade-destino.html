@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Painel da Unidade de Destino – PRO</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- usa o mesmo css global da sua demo -->
+  <link rel="stylesheet" href="assets/css/global.css">
+  <style>
+    body { background: var(--light); }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .tag {
+      display: inline-block;
+      background: rgba(49, 184, 145, 0.12);
+      border: 1px solid rgba(49, 184, 145, 0.4);
+      color: #1f6f55;
+      padding: .25rem .8rem;
+      border-radius: 999px;
+      font-size: .7rem;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      font-weight: 600;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 992px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+    .card {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.03);
+      border: 1px solid rgba(15, 23, 42, 0.03);
+      padding: 1.5rem 1.5rem 1.25rem;
+    }
+    .list-casos {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .caso {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: center;
+      background: rgba(248, 250, 252, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      border-radius: 12px;
+      padding: .9rem 1rem;
+    }
+    .caso-left {
+      display: flex;
+      flex-direction: column;
+      gap: .25rem;
+    }
+    .caso-title {
+      font-weight: 600;
+      font-size: .9rem;
+    }
+    .caso-meta {
+      font-size: .7rem;
+      color: #64748b;
+    }
+    .badge-prio {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      border-radius: 999px;
+      padding: .25rem .6rem;
+      font-size: .65rem;
+      font-weight: 600;
+    }
+    .prio-alta {
+      background: rgba(244, 63, 94, 0.1);
+      color: #be123c;
+      border: 1px solid rgba(244, 63, 94, 0.35);
+    }
+    .prio-media {
+      background: rgba(234, 179, 8, 0.1);
+      color: #92400e;
+      border: 1px solid rgba(234, 179, 8, 0.35);
+    }
+    .prio-baixa {
+      background: rgba(45, 212, 191, 0.1);
+      color: #115e59;
+      border: 1px solid rgba(45, 212, 191, 0.35);
+    }
+    .btn-inline {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: .4rem .7rem;
+      font-size: .7rem;
+      cursor: pointer;
+    }
+    .status-chip {
+      display: inline-block;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.28);
+      color: #312e81;
+      border-radius: 999px;
+      padding: .2rem .6rem;
+      font-size: .65rem;
+      font-weight: 500;
+    }
+    .table-mini {
+      width: 100%;
+      border-spacing: 0;
+      margin-top: 1rem;
+    }
+    .table-mini th {
+      text-align: left;
+      font-size: .7rem;
+      color: #94a3b8;
+      font-weight: 600;
+      padding-bottom: .6rem;
+    }
+    .table-mini td {
+      padding: .55rem .25rem .55rem 0;
+      font-size: .75rem;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+    }
+  </style>
+</head>
+<body>
+  <div class="container" style="padding: 40px 0 80px;">
+    <div class="topbar">
+      <div>
+        <div class="tag">Painel da unidade de destino</div>
+        <h1 style="margin-top: .6rem; font-size: 1.55rem;">Casos regulados recebidos via PRO / SISREG</h1>
+        <p style="color: #64748b; font-size: .85rem; margin-top: .4rem;">
+          Veja as gestantes que já foram reguladas para esta unidade e prepare o atendimento com antecedência.
+        </p>
+      </div>
+      <div>
+        <button class="btn btn-primary" style="padding: .6rem 1rem; font-size: .75rem;">Atualizar agora</button>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- Coluna esquerda: lista de casos -->
+      <div class="card">
+        <h2 style="font-size: 1rem; margin-bottom: .25rem;">Fila clínica de chegada</h2>
+        <p style="color: #94a3b8; font-size: .7rem;">Ordenada por prioridade e horário previsto.</p>
+
+        <div class="list-casos">
+          <!-- caso 1 -->
+          <div class="caso">
+            <div class="caso-left">
+              <span class="caso-title">Gestante 2025-11-08-001</span>
+              <span class="caso-meta">Origem: UPA Centro • Encaminhado às 13:20 • Chegada prevista: 13:50</span>
+              <span class="caso-meta">Queixa: sangramento / dor pélvica • Idade gestacional: 31s</span>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:.4rem; align-items:flex-end;">
+              <span class="badge-prio prio-alta">Prioridade alta</span>
+              <button class="btn-inline">Confirmar preparo</button>
+            </div>
+          </div>
+
+          <!-- caso 2 -->
+          <div class="caso">
+            <div class="caso-left">
+              <span class="caso-title">Gestante 2025-11-08-002</span>
+              <span class="caso-meta">Origem: ESF Maracanã • Encaminhado às 13:10 • Chegada prevista: 14:00</span>
+              <span class="caso-meta">Queixa: PA elevada / cefaleia • Suspeita de pré-eclâmpsia</span>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:.4rem; align-items:flex-end;">
+              <span class="badge-prio prio-alta">Prioridade alta</span>
+              <button class="btn-inline">Confirmar preparo</button>
+            </div>
+          </div>
+
+          <!-- caso 3 -->
+          <div class="caso">
+            <div class="caso-left">
+              <span class="caso-title">Gestante 2025-11-08-003</span>
+              <span class="caso-meta">Origem: Teletriagem PRO • Encaminhado às 12:55 • Chegada prevista: 14:30</span>
+              <span class="caso-meta">Queixa: perda de tampão / sem dor intensa</span>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:.4rem; align-items:flex-end;">
+              <span class="badge-prio prio-media">Prioridade moderada</span>
+              <button class="btn-inline" style="background:#e2e8f0; color:#0f172a;">Marcar como recebido</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coluna direita: detalhes e capacidade -->
+      <div class="card">
+        <h2 style="font-size: 1rem; margin-bottom: .25rem;">Status da unidade</h2>
+        <p style="color: #94a3b8; font-size: .7rem;">Capacidade e últimos recebimentos.</p>
+
+        <table class="table-mini">
+          <thead>
+            <tr>
+              <th>Recurso</th>
+              <th>Disponível</th>
+              <th>Ocupado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Leitos obstétricos</td>
+              <td>03</td>
+              <td>07</td>
+            </tr>
+            <tr>
+              <td>Leitos UTI materna</td>
+              <td>01</td>
+              <td>01</td>
+            </tr>
+            <tr>
+              <td>Centro obstétrico</td>
+              <td>Operacional</td>
+              <td>-</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3 style="margin-top: 1.5rem; font-size: .8rem;">Últimos casos recebidos</h3>
+        <div style="display:flex; flex-direction:column; gap:.6rem; margin-top:.7rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:.7rem;">2025-11-08-0009 • PA 16x11 • chegada 12:40</span>
+            <span class="status-chip">Em atendimento</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:.7rem;">2025-11-08-0008 • sangramento leve • chegada 12:10</span>
+            <span class="status-chip" style="background:rgba(34,197,94,.12); border-color:rgba(34,197,94,.35); color:#166534;">Concluído</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:.7rem;">2025-11-08-0007 • dor lombar • chegada 11:50</span>
+            <span class="status-chip" style="background:rgba(234,179,8,.12); border-color:rgba(234,179,8,.35); color:#92400e;">Aguardando</span>
+          </div>
+        </div>
+
+        <h3 style="margin-top: 1.5rem; font-size: .8rem;">Observação automática da PRO</h3>
+        <p style="font-size: .7rem; color:#475569; line-height:1.5; margin-top:.35rem;">
+          Foram encaminhadas 2 gestantes com prioridade alta nos últimos 30 minutos. Recomenda-se preparar leito e avisar obstetra de plantão.
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
