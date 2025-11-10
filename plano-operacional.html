@@ -51,6 +51,8 @@
     margin-bottom: 50px;
     max-width: 800px;
     line-height: 1.5;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .grid-container {
@@ -149,7 +151,7 @@
   }
 
   .footer {
-    margin-top: 40px;
+    margin: 40px auto 0;
     text-align: center;
     font-size: 1rem;
     color: var(--texto-secundario);
@@ -172,6 +174,25 @@
     font-style: italic;
     color: var(--texto-primario);
     font-weight: 500;
+  }
+
+  /* botão discreto de indicadores */
+  .btn-indicadores {
+    background: #eef2ff;
+    border: 1px solid #d4d4ff;
+    color: #3730a3;
+    font-size: 0.7rem;
+    padding: 5px 14px;
+    border-radius: 999px;
+    text-decoration: none;
+    display: inline-flex;
+    gap: 4px;
+    align-items: center;
+    transition: background .2s;
+    margin-top: 18px;
+  }
+  .btn-indicadores:hover {
+    background: #e0e7ff;
   }
 
   @media (max-width: 1024px) {
@@ -261,6 +282,9 @@
     <div class="footer">
       <strong>Resultado Final:</strong> PRO validada em campo, com redução de tempo de resposta e aumento de equidade clínica.<br>
       <em>"12 meses para transformar minutos em vidas salvas."</em>
+      <a href="indicadores.html" class="btn-indicadores" target="_blank" title="Abrir indicadores">
+        📊 indicadores
+      </a>
     </div>
   </div>
 </body>

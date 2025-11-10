@@ -1,646 +1,744 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PRO RJ • Portal Administrativo (SES-RJ) — Demo</title>
-  <meta name="description" content="Administra a habilitação do Copiloto PRO RJ nesta estação e gerencia dados da demonstração." />
+  <title>Gestão de Usuários e Permissões • PRO SES-RJ</title>
   
   <style>
-    /* ================================
-       PRO RJ — Sistema de Design
-       Governo do Estado do Rio de Janeiro
-       ================================ */
-
     :root {
-      /* Cores Oficiais do Estado do RJ */
       --azul-rj: #0052A5;
       --azul-rj-dark: #003A75;
-      --azul-rj-light: #1A6DC1;
-      --verde-rj: #00A859;
-      --amarelo-rj: #FFD100;
-      --branco-rj: #FFFFFF;
-      --cinza-rj-100: #F5F5F5;
-      --cinza-rj-200: #E0E0E0;
-      --cinza-rj-500: #666666;
-      --cinza-rj-700: #333333;
-      
-      /* Cores de Apoio para Saúde */
-      --verde-saude: #00A859;
-      --azul-saude: #0072BC;
-      --laranja-alerta: #FF6B00;
-      --vermelho-urgente: #D32F2F;
-      
-      /* Superfícies */
-      --surface: #FFFFFF;
-      --surface-alt: #F8F9FA;
-      --border: #E0E0E0;
+      --azul-light: #EFF6FF;
+      --verde: #15803D;
+      --verde-light: #E7F6EC;
+      --amarelo: #F59E0B;
+      --amarelo-light: #FEF3C7;
+      --vermelho: #DC2626;
+      --vermelho-light: #FEE2E2;
+      --roxo: #7C3AED;
+      --roxo-light: #EDE9FE;
+      --cinza-50: #F9FAFB;
+      --cinza-100: #F3F4F6;
+      --cinza-200: #E5E7EB;
+      --cinza-600: #4B5563;
+      --cinza-900: #111827;
     }
 
-    /* Reset & Base */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif;
     }
 
     body {
-      background-color: var(--cinza-rj-100);
-      color: var(--cinza-rj-700);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--cinza-50);
+      color: var(--cinza-900);
       line-height: 1.6;
-      overflow-x: hidden;
     }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-
-    /* Header RJ */
-    header {
+    .header {
       background: linear-gradient(135deg, var(--azul-rj) 0%, var(--azul-rj-dark) 100%);
       color: white;
-      padding: 1rem 0;
-      position: fixed;
-      width: 100%;
-      top: 0;
-      z-index: 1000;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 1.5rem 2rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
 
-    .nav-container {
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 1rem;
     }
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-    }
-
-    .logo-icon {
-      font-size: 24px;
-    }
-
-    .logo-text {
-      font-size: 20px;
+    .header h1 {
+      font-size: 1.5rem;
       font-weight: 700;
     }
 
-    .nav-links {
+    .header-actions {
       display: flex;
-      gap: 20px;
+      gap: 1rem;
       align-items: center;
-    }
-
-    .nav-links a {
-      color: white;
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 14px;
-    }
-
-    .login-btn {
-      background: var(--amarelo-rj);
-      color: var(--azul-rj-dark);
-      border: none;
-      padding: 8px 20px;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    /* Hero Section */
-    .hero {
-      background: linear-gradient(
-        135deg,
-        color-mix(in srgb, var(--azul-rj) 40%, var(--azul-rj-dark)) 0%,
-        var(--azul-rj-dark) 100%
-      );
-      color: white;
-      padding: 140px 0 80px;
-      margin-top: 70px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-content {
-      text-align: center;
-      max-width: 900px;
-      margin: 0 auto;
-      position: relative;
-      z-index: 2;
-    }
-
-    .hero h1 {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-      line-height: 1.2;
-      font-weight: 700;
-    }
-
-    .hero p {
-      font-size: 1.2rem;
-      margin-bottom: 2rem;
-      opacity: 0.95;
-      max-width: 700px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .hero-buttons {
-      display: flex;
-      gap: 16px;
-      justify-content: center;
-      margin-top: 1.5rem;
-    }
-
-    /* Buttons */
-    .btn {
-      padding: 12px 28px;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-decoration: none;
-      font-size: 15px;
-      border: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .btn-primary {
-      background: white;
-      color: var(--azul-rj);
-    }
-
-    .btn-primary:hover {
-      background: var(--cinza-rj-100);
-      transform: translateY(-2px);
-    }
-
-    .btn-secondary {
-      background: transparent;
-      color: white;
-      border: 2px solid rgba(255,255,255,0.8);
-    }
-
-    .btn-secondary:hover {
-      background: white;
-      color: var(--azul-rj);
-      border-color: white;
-      transform: translateY(-2px);
-    }
-
-    /* Cards */
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      overflow: hidden;
-    }
-
-    .card h3 {
-      padding: 1.25rem 1.5rem;
-      border-bottom: 1px solid var(--border);
-      background: var(--surface-alt);
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: var(--azul-rj-dark);
-      margin: 0;
-    }
-
-    .card-body {
-      padding: 1.5rem;
-    }
-
-    /* Grid */
-    .grid {
-      display: grid;
-      gap: 24px;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    }
-
-    /* Badges */
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-weight: 600;
-      font-size: 14px;
-      border: 1px solid var(--border);
-      background: var(--cinza-rj-200);
-      color: var(--cinza-rj-700);
-    }
-
-    .badge.ok {
-      background: #e8f6ef;
-      color: var(--verde-rj);
-      border-color: #ccebdc;
-    }
-
-    .badge.warn {
-      background: #e8f4fc;
-      color: var(--azul-rj);
-      border-color: #cfe4f6;
-    }
-
-    .muted {
-      color: var(--cinza-rj-500);
-      font-size: 14px;
-    }
-
-    /* Utilities */
-    .btn-row {
-      display: flex;
-      gap: 12px;
       flex-wrap: wrap;
     }
 
-    .mono {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-    }
-
-    .list {
-      padding-left: 18px;
-    }
-
-    hr {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 16px 0;
-    }
-
-    /* Toast */
-    #toast {
-      position: fixed;
-      left: 50%;
-      bottom: 24px;
-      transform: translateX(-50%);
-      background: var(--azul-rj-dark);
-      color: white;
-      padding: 12px 16px;
+    .btn {
+      padding: 0.6rem 1.5rem;
       border-radius: 8px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .25s ease;
-      z-index: 9999;
+      border: none;
       font-weight: 600;
-    }
-
-    #toast.show {
-      opacity: 1;
-    }
-
-    /* Footer */
-    footer {
-      background: var(--azul-rj-dark);
-      color: white;
-      padding: 50px 0 20px;
-    }
-
-    .footer-content {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 45px;
-      margin-bottom: 50px;
-    }
-
-    .footer-column h3 {
-      font-size: 18px;
-      margin-bottom: 22px;
-      color: white;
-      font-weight: 600;
-    }
-
-    .footer-links {
-      list-style: none;
-    }
-
-    .footer-links li {
-      margin-bottom: 12px;
-    }
-
-    .footer-links a {
-      color: #b8b9bb;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
       text-decoration: none;
-      transition: color 0.3s;
-      font-size: 15px;
     }
 
-    .footer-links a:hover {
+    .btn-white {
+      background: white;
+      color: var(--azul-rj);
+    }
+
+    .btn-white:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(255,255,255,0.3);
+    }
+
+    .link-discreto {
+      font-size: .75rem;
+      color: rgba(255,255,255,.8);
+      text-decoration: none;
+    }
+
+    .link-discreto:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+    }
+
+    .page-header {
+      margin-bottom: 2rem;
+    }
+
+    .page-header h2 {
+      font-size: 1.75rem;
+      color: var(--cinza-900);
+      margin-bottom: 0.5rem;
+    }
+
+    .page-header p {
+      color: var(--cinza-600);
+      font-size: 0.95rem;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      border: 1px solid var(--cinza-200);
+      margin-bottom: 2rem;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--cinza-100);
+    }
+
+    .card-header h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--cinza-900);
+    }
+
+    .filters {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .filter-group label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--cinza-600);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    select, input {
+      padding: 0.6rem 1rem;
+      border: 1px solid var(--cinza-200);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      background: white;
+      color: var(--cinza-900);
+    }
+
+    select:focus, input:focus {
+      outline: none;
+      border-color: var(--azul-rj);
+      box-shadow: 0 0 0 3px rgba(0,82,165,0.1);
+    }
+
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    thead {
+      background: var(--cinza-50);
+    }
+
+    th {
+      padding: 1rem;
+      text-align: left;
+      font-weight: 700;
+      color: var(--cinza-900);
+      border-bottom: 2px solid var(--cinza-200);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--cinza-200);
+      color: var(--cinza-600);
+    }
+
+    tr:hover {
+      background: var(--cinza-50);
+    }
+
+    tr.highlight {
+      background: var(--roxo-light);
+      border-left: 4px solid var(--roxo);
+    }
+
+    tr.highlight:hover {
+      background: #E9D5FF;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.35rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      gap: 0.3rem;
+    }
+
+    .badge.ativo { background: var(--verde-light); color: var(--verde); }
+    .badge.pendente { background: var(--amarelo-light); color: var(--amarelo); }
+    .badge.inativo { background: var(--cinza-200); color: var(--cinza-600); }
+
+    .btn-sm {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.8rem;
+      border-radius: 6px;
+    }
+
+    .btn-success {
+      background: var(--verde);
       color: white;
     }
 
-    .footer-bottom {
-      text-align: center;
-      padding-top: 35px;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      color: #b8b9bb;
-      font-size: 14px;
+    .btn-success:hover {
+      background: #166534;
     }
 
-    /* Section Title */
-    .section-title {
-      text-align: center;
-      margin-bottom: 50px;
+    .btn-danger {
+      background: var(--vermelho);
+      color: white;
     }
 
-    .section-title h2 {
-      font-size: 2.5rem;
-      color: var(--azul-rj-dark);
+    .btn-danger:hover {
+      background: #B91C1C;
+    }
+
+    .btn-secondary {
+      background: var(--cinza-200);
+      color: var(--cinza-900);
+    }
+
+    .btn-secondary:hover {
+      background: var(--cinza-600);
+      color: white;
+    }
+
+    .btn-primary {
+      background: var(--azul-rj);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--azul-rj-dark);
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .log-section {
+      background: var(--cinza-50);
+      border-radius: 10px;
+      padding: 1.5rem;
+    }
+
+    .log-item {
+      padding: 1rem;
+      border-left: 3px solid var(--cinza-200);
       margin-bottom: 1rem;
-      font-weight: 700;
+      background: white;
+      border-radius: 0 8px 8px 0;
     }
 
-    .section-title p {
-      font-size: 1.2rem;
-      color: var(--cinza-rj-500);
-      max-width: 650px;
-      margin: 0 auto;
-      line-height: 1.7;
+    .log-item.highlight {
+      border-left-color: var(--roxo);
+      background: var(--roxo-light);
+    }
+
+    .log-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .log-header strong {
+      color: var(--cinza-900);
+      font-size: 0.9rem;
+    }
+
+    .log-time {
+      font-size: 0.75rem;
+      color: var(--cinza-600);
+    }
+
+    .log-details {
+      font-size: 0.85rem;
+      color: var(--cinza-600);
+      line-height: 1.6;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-box {
+      background: white;
+      border: 1px solid var(--cinza-200);
+      border-radius: 10px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--azul-rj);
+      margin-bottom: 0.3rem;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--cinza-600);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     @media (max-width: 768px) {
-      .nav-links {
-        display: none;
-      }
-      
-      .hero {
-        padding: 120px 0 60px;
-      }
-
-      .hero h1 {
-        font-size: 2rem;
-      }
-      
-      .hero p {
-        font-size: 1rem;
-      }
-      
-      .hero-buttons {
+      .header-content {
         flex-direction: column;
-        align-items: center;
+        gap: 1rem;
       }
 
-      .btn {
-        width: 100%;
-        max-width: 280px;
-      }
-      
-      .section-title h2 {
-        font-size: 2rem;
+      .filters {
+        flex-direction: column;
       }
 
-      .section-title p {
-        font-size: 1rem;
+      .action-buttons {
+        flex-direction: column;
       }
     }
   </style>
 </head>
 <body>
-  <!-- Header RJ -->
-  <header>
-    <div class="container nav-container">
-      <div class="logo" onclick="location.href='index.html'">
-        <span class="logo-icon">🩺</span>
-        <span class="logo-text">PRO RJ • SES-RJ</span>
+  <header class="header">
+    <div class="header-content">
+      <h1>🏛️ Gestão de Usuários e Permissões • PRO SES-RJ</h1>
+      <div class="header-actions">
+        <a href="admin-ses-rj.html" class="btn btn-white">← Voltar à Governança</a>
+        <a href="agente.html" class="link-discreto">painel do agente →</a>
       </div>
-      <nav class="nav-links">
-        <a href="index.html">Launcher</a>
-        <a href="sisreg-mock.html">SISREG RJ</a>
-        <a href="plugin.html" onclick="event.preventDefault(); alert('O plugin abre dentro do SISREG RJ. Acesse sisreg-mock.html.');">Plugin</a>
-      </nav>
-      <button class="login-btn" onclick="mostrarAjuda()">Ajuda</button>
     </div>
   </header>
 
-  <!-- Hero -->
-  <section class="hero">
-    <div class="container hero-content">
-      <h1>Habilitar Copiloto PRO RJ nesta estação</h1>
-      <p>Simula a ação da TI da SES-RJ ao ativar o plugin do PRO RJ no posto de trabalho do regulador. 
-        Esta habilitação é <strong>pré-requisito</strong> para o plugin funcionar no <em>SISREG RJ</em>.
-      </p>
-      <div class="hero-buttons">
-        <a class="btn btn-primary" href="#acoes">Ir para ações</a>
-        <a class="btn btn-secondary" href="sisreg-mock.html">Abrir SISREG RJ</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Conteúdo -->
-  <main class="container" style="padding: 50px 0;">
-    <div class="section-title" id="acoes">
-      <h2>Ações administrativas</h2>
-      <p>Use os botões abaixo para habilitar/validar a estação e gerenciar os dados da DEMO.</p>
+  <main class="container">
+    <div class="page-header">
+      <h2>Controle de Acesso ao Sistema</h2>
+      <p>Gerencie usuários, perfis e permissões da rede estadual de regulação</p>
     </div>
 
-    <div class="grid">
-      <!-- Card: Status da Estação -->
-      <div class="card">
-        <h3>Status da estação</h3>
-        <div class="card-body">
-          <p id="statusBadge" class="badge warn">⏳ Verificando...</p>
-          <p class="muted" id="statusHint" style="margin-top: 8px;">Aguardando verificação do navegador.</p>
-          <hr>
-          <div style="display:flex; align-items:center; gap: 10px; flex-wrap: wrap;">
-            <button id="btnEnable" class="btn btn-primary">Habilitar PRO RJ nesta estação</button>
-            <button id="btnValidate" class="btn btn-secondary">Validar status</button>
-          </div>
-          <p class="muted" style="margin-top:10px;">A habilitação grava <span class="mono">localStorage["pro-rj.enabledOnThisStation"]</span> e um timestamp.</p>
-        </div>
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div class="stat-value">187</div>
+        <div class="stat-label">Usuários Ativos</div>
       </div>
-
-      <!-- Card: Próximo passo -->
-      <div class="card">
-        <h3>Próximo passo</h3>
-        <div class="card-body">
-          <ol class="list">
-            <li>Clique em <strong>Habilitar PRO RJ nesta estação</strong>.</li>
-            <li>Abra o <a href="sisreg-mock.html">SISREG RJ</a>.</li>
-            <li>Clique no banner <em>“PRO Copiloto habilitado”</em> → <strong>Ativar</strong>.</li>
-            <li>Conclua o wizard (Gov.br fake → Permissões → Pronto).</li>
-            <li>O painel lateral do PRO RJ aparecerá no SISREG RJ.</li>
-          </ol>
-          <div class="btn-row" style="margin-top:16px;">
-            <a class="btn btn-secondary" href="sisreg-mock.html">Abrir SISREG RJ</a>
-            <a class="btn btn-secondary" href="index.html">Voltar ao Launcher</a>
-          </div>
-        </div>
+      <div class="stat-box">
+        <div class="stat-value">94</div>
+        <div class="stat-label">Agentes de Saúde</div>
       </div>
-
-      <!-- Card: Dados da DEMO -->
-      <div class="card">
-        <h3>Dados da DEMO</h3>
-        <div class="card-body">
-          <p>Use o reset para limpar flags, tickets e auditoria simulada. Isso ajuda a recompor o início da apresentação.</p>
-          <div class="btn-row" style="margin-top:8px;">
-            <button id="btnReset" class="btn" style="border:2px solid var(--laranja-alerta); color: var(--laranja-alerta);">Resetar dados da DEMO</button>
-            <button id="btnDump" class="btn btn-secondary">Inspecionar chaves (console)</button>
-          </div>
-          <p class="muted" style="margin-top:10px;">Remove chaves com prefixo <span class="mono">"pro-rj."</span> no <span class="mono">localStorage</span>.</p>
-        </div>
+      <div class="stat-box">
+        <div class="stat-value">12</div>
+        <div class="stat-label">Pendentes</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value">42</div>
+        <div class="stat-label">Unidades Ativas</div>
       </div>
     </div>
 
-    <!-- Observações -->
-    <section style="margin-top: 36px;">
-      <div class="card">
-        <div class="card-body">
-          <h3 style="margin-bottom:10px;">Observações</h3>
-          <ul class="list">
-            <li>Na operação real, a <strong>SES-RJ (TI)</strong> realiza a distribuição e habilitação do plugin (GPO/Intune/MDM).</li>
-            <li>Login é via <strong>Gov.br/SSO</strong> no primeiro uso &rarr; sem novas senhas.</li>
-            <li>Esta página apenas <em>simula</em> a habilitação local para a DEMO.</li>
-            <li>Sistema integrado à rede estadual de saúde do Rio de Janeiro.</li>
-          </ul>
+    <div class="card">
+      <div class="card-header">
+        <h3>Lista de Usuários</h3>
+        <button class="btn btn-primary" onclick="alert('Funcionalidade de cadastro em produção')">+ Novo Usuário</button>
+      </div>
+
+      <div class="filters">
+        <div class="filter-group">
+          <label>Unidade</label>
+          <select>
+            <option>Todas as unidades</option>
+            <option>UBS São Cristóvão</option>
+            <option>Hospital Municipal Duque de Caxias</option>
+            <option>UBS Nova Iguaçu Centro</option>
+            <option>Maternidade Maria da Glória</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>Perfil</label>
+          <select>
+            <option>Todos os perfis</option>
+            <option>Agente de Saúde</option>
+            <option>Regulador Médico</option>
+            <option>Gestor SES</option>
+            <option>Unidade de Destino</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>Status</label>
+          <select>
+            <option>Todos os status</option>
+            <option>Ativo</option>
+            <option>Pendente</option>
+            <option>Inativo</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>Buscar</label>
+          <input type="text" placeholder="Nome ou CPF..." style="min-width: 200px;">
         </div>
       </div>
-    </section>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>CPF</th>
+              <th>Cargo</th>
+              <th>Unidade</th>
+              <th>Perfil PRO</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="highlight">
+              <td><strong>Maria da Silva Santos</strong></td>
+              <td>123.456.789-00</td>
+              <td>Técnica de Enfermagem</td>
+              <td>UBS São Cristóvão</td>
+              <td>
+                <select style="font-weight: 600; color: var(--roxo);">
+                  <option>🏥 Agente de Saúde</option>
+                  <option>👨‍⚕️ Regulador Médico</option>
+                  <option>📊 Gestor SES</option>
+                  <option>🏨 Unidade de Destino</option>
+                </select>
+              </td>
+              <td><span class="badge ativo">● Ativo</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn btn-secondary btn-sm">Editar</button>
+                  <button class="btn btn-danger btn-sm">Bloquear</button>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td>João Pedro Costa</td>
+              <td>987.654.321-11</td>
+              <td>Médico Regulador</td>
+              <td>Central de Regulação RJ</td>
+              <td>
+                <select>
+                  <option>👨‍⚕️ Regulador Médico</option>
+                  <option>🏥 Agente de Saúde</option>
+                  <option>📊 Gestor SES</option>
+                  <option>🏨 Unidade de Destino</option>
+                </select>
+              </td>
+              <td><span class="badge ativo">● Ativo</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn btn-secondary btn-sm">Editar</button>
+                  <button class="btn btn-danger btn-sm">Bloquear</button>
+                </div>
+              </td>
+            </tr>
+
+            <tr class="highlight">
+              <td><strong>Ana Paula Oliveira</strong></td>
+              <td>456.789.123-22</td>
+              <td>Agente Comunitária</td>
+              <td>UBS Nova Iguaçu Centro</td>
+              <td>
+                <select style="font-weight: 600; color: var(--roxo);">
+                  <option>🏥 Agente de Saúde</option>
+                  <option>👨‍⚕️ Regulador Médico</option>
+                  <option>📊 Gestor SES</option>
+                  <option>🏨 Unidade de Destino</option>
+                </select>
+              </td>
+              <td><span class="badge ativo">● Ativo</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn btn-secondary btn-sm">Editar</button>
+                  <button class="btn btn-danger btn-sm">Bloquear</button>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td>Carlos Eduardo Lima</td>
+              <td>321.654.987-33</td>
+              <td>Coordenador</td>
+              <td>SES-RJ Subsequência</td>
+              <td>
+                <select>
+                  <option>📊 Gestor SES</option>
+                  <option>👨‍⚕️ Regulador Médico</option>
+                  <option>🏥 Agente de Saúde</option>
+                  <option>🏨 Unidade de Destino</option>
+                </select>
+              </td>
+              <td><span class="badge ativo">● Ativo</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn btn-secondary btn-sm">Editar</button>
+                  <button class="btn btn-danger btn-sm">Bloquear</button>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td>Fernanda Souza Alves</td>
+              <td>789.123.456-44</td>
+              <td>Enfermeira Obstetra</td>
+              <td>Maternidade Maria da Glória</td>
+              <td>
+                <select>
+                  <option>🏨 Unidade de Destino</option>
+                  <option>👨‍⚕️ Regulador Médico</option>
+                  <option>🏥 Agente de Saúde</option>
+                  <option>📊 Gestor SES</option>
+                </select>
+              </td>
+              <td><span class="badge ativo">● Ativo</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn btn-secondary btn-sm">Editar</button>
+                  <button class="btn btn-danger btn-sm">Bloquear</button>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td>Roberto Martins Silva</td>
+              <td>147.258.369-55</td>
+              <td>Auxiliar Administrativo</td>
+              <td>Hospital Municipal Duque de Caxias</td>
+              <td>
+                <select>
+                  <option>Selecionar perfil...</option>
+                  <option>👨‍⚕️ Regulador Médico</option>
+                  <option>🏥 Agente de Saúde</option>
+                  <option>📊 Gestor SES</option>
+                  <option>🏨 Unidade de Destino</option>
+                </select>
+              </td>
+              <td><span class="badge pendente">⏳ Pendente</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn btn-success btn-sm">Aprovar</button>
+                  <button class="btn btn-danger btn-sm">Rejeitar</button>
+                </div>
+              </td>
+            </tr>
+
+            <tr class="highlight">
+              <td><strong>Juliana Ferreira Costa</strong></td>
+              <td>852.963.741-66</td>
+              <td>Técnica de Enfermagem</td>
+              <td>UBS São Cristóvão</td>
+              <td>
+                <select style="font-weight: 600; color: var(--roxo);">
+                  <option>🏥 Agente de Saúde</option>
+                  <option>👨‍⚕️ Regulador Médico</option>
+                  <option>📊 Gestor SES</option>
+                  <option>🏨 Unidade de Destino</option>
+                </select>
+              </td>
+              <td><span class="badge ativo">● Ativo</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn btn-secondary btn-sm">Editar</button>
+                  <button class="btn btn-danger btn-sm">Bloquear</button>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td>Paulo Ricardo Gomes</td>
+              <td>963.852.741-77</td>
+              <td>Médico Obstetra</td>
+              <td>Central de Regulação RJ</td>
+              <td>
+                <select>
+                  <option>👨‍⚕️ Regulador Médico</option>
+                  <option>🏥 Agente de Saúde</option>
+                  <option>📊 Gestor SES</option>
+                  <option>🏨 Unidade de Destino</option>
+                </select>
+              </td>
+              <td><span class="badge ativo">● Ativo</span></td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn btn-secondary btn-sm">Editar</button>
+                  <button class="btn btn-danger btn-sm">Bloquear</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3>Histórico de Alterações (Últimas 24h)</h3>
+      </div>
+
+      <div class="log-section">
+        <div class="log-item highlight">
+          <div class="log-header">
+            <strong>🏥 Perfil "Agente de Saúde" atribuído</strong>
+            <span class="log-time">Hoje, 14:23</span>
+          </div>
+          <div class="log-details">
+            <strong>Maria da Silva Santos</strong> (CPF 123.456.789-00) recebeu permissão de <strong>Agente de Saúde</strong>.<br>
+            Agora pode gerar e enviar links de triagem via WhatsApp.<br>
+            <em>Alterado por: Dr. Roberto Silva (Coordenador TI)</em>
+          </div>
+        </div>
+
+        <div class="log-item">
+          <div class="log-header">
+            <strong>✓ Usuário aprovado</strong>
+            <span class="log-time">Hoje, 13:45</span>
+          </div>
+          <div class="log-details">
+            <strong>João Pedro Costa</strong> (CPF 987.654.321-11) foi aprovado como <strong>Regulador Médico</strong>.<br>
+            <em>Aprovado por: Dr. Roberto Silva (Coordenador TI)</em>
+          </div>
+        </div>
+
+        <div class="log-item highlight">
+          <div class="log-header">
+            <strong>🏥 Perfil "Agente de Saúde" atribuído</strong>
+            <span class="log-time">Hoje, 11:18</span>
+          </div>
+          <div class="log-details">
+            <strong>Ana Paula Oliveira</strong> (CPF 456.789.123-22) recebeu permissão de <strong>Agente de Saúde</strong>.<br>
+            Unidade: UBS Nova Iguaçu Centro.<br>
+            <em>Alterado por: Dr. Roberto Silva (Coordenador TI)</em>
+          </div>
+        </div>
+
+        <div class="log-item">
+          <div class="log-header">
+            <strong>⚠️ Acesso bloqueado</strong>
+            <span class="log-time">Hoje, 09:30</span>
+          </div>
+          <div class="log-details">
+            <strong>Pedro Almeida Santos</strong> (CPF 741.852.963-88) teve acesso bloqueado temporariamente.<br>
+            Motivo: Transferência de unidade em andamento.<br>
+            <em>Bloqueado por: Dra. Carla Mendes (Gestora SES)</em>
+          </div>
+        </div>
+
+        <div class="log-item highlight">
+          <div class="log-header">
+            <strong>🏥 Perfil "Agente de Saúde" atribuído</strong>
+            <span class="log-time">Ontem, 16:52</span>
+          </div>
+          <div class="log-details">
+            <strong>Juliana Ferreira Costa</strong> (CPF 852.963.741-66) recebeu permissão de <strong>Agente de Saúde</strong>.<br>
+            Primeira habilitação na UBS São Cristóvão.<br>
+            <em>Alterado por: Dr. Roberto Silva (Coordenador TI)</em>
+          </div>
+        </div>
+
+        <div class="log-item">
+          <div class="log-header">
+            <strong>📝 Permissão editada</strong>
+            <span class="log-time">Ontem, 15:20</span>
+          </div>
+          <div class="log-details">
+            <strong>Carlos Eduardo Lima</strong> passou de "Regulador Médico" para <strong>Gestor SES</strong>.<br>
+            Motivo: Promoção para cargo de coordenação.<br>
+            <em>Editado por: Dra. Carla Mendes (Gestora SES)</em>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin: 2rem 0;">
+      <a href="agente.html" class="btn btn-primary" style="font-size: 1rem; padding: 0.9rem 2rem;">
+        Ver Painel do Agente de Saúde em Ação →
+      </a>
+    </div>
   </main>
 
-  <!-- Footer RJ -->
-  <footer>
-    <div class="container footer-content">
-      <div class="footer-column">
-        <h3>PRO RJ • SES-RJ (Demo)</h3>
-        <ul class="footer-links">
-          <li><a href="index.html">Launcher</a></li>
-          <li><a href="agente.html">Portal do Agente</a></li>
-          <li><a href="triagem.html">Triagem (Gestante)</a></li>
-          <li><a href="ubs.html">Painel UBS</a></li>
-        </ul>
-      </div>
-      <div class="footer-column">
-        <h3>Documentação</h3>
-        <ul class="footer-links">
-          <li><a href="README.md">README</a></li>
-          <li><a href="GUIA-TESTE.md">Guia de Teste</a></li>
-          <li><a href="RESUMO-EXECUTIVO.md">Resumo Executivo</a></li>
-        </ul>
-      </div>
-      <div class="footer-column">
-        <h3>Suporte</h3>
-        <ul class="footer-links">
-          <li><a href="#" onclick="mostrarAjuda(); return false;">Como funciona</a></li>
-          <li><a href="sisreg-mock.html">Ativar no SISREG RJ</a></li>
-          <li><a href="mailto:suporte@pro.rj.gov.br">suporte@pro.rj.gov.br</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="container footer-bottom">
-      © 2024 Governo do Estado do Rio de Janeiro - PRO RJ • Plataforma de Regulação Otimizada
-    </div>
+  <footer style="background: #0f172a; color: rgba(255,255,255,0.6); text-align: center; padding: 2rem; font-size: 0.9rem;">
+    <p><strong>PRO - Plataforma de Regulação Otimizada</strong></p>
+    <p style="margin-top: 0.5rem;">SES-RJ | Libète Agência de Tecnologias Humanas</p>
   </footer>
-
-  <!-- Toast -->
-  <div id="toast" role="status" aria-live="polite"></div>
-
-  <script>
-    // Chaves usadas na demo PRO RJ
-    const KEY_ENABLED = 'pro-rj.enabledOnThisStation';
-    const KEY_ENABLED_AT = 'pro-rj.enabledAt';
-    const PREFIX = 'pro-rj.';
-
-    // Utilidades
-    const $ = (sel) => document.querySelector(sel);
-    function toast(msg, ms=1800){ 
-      const t = $('#toast'); t.textContent = msg; t.classList.add('show');
-      setTimeout(()=> t.classList.remove('show'), ms);
-    }
-
-    function setEnabled(value){
-      if(value){
-        localStorage.setItem(KEY_ENABLED, 'true');
-        localStorage.setItem(KEY_ENABLED_AT, new Date().toISOString());
-      } else {
-        localStorage.removeItem(KEY_ENABLED);
-        localStorage.removeItem(KEY_ENABLED_AT);
-      }
-      renderStatus();
-    }
-
-    function isEnabled(){
-      return localStorage.getItem(KEY_ENABLED) === 'true';
-    }
-
-    function renderStatus(){
-      const enabled = isEnabled();
-      const badge = $('#statusBadge');
-      const hint = $('#statusHint');
-      const btnEnable = $('#btnEnable');
-
-      if(enabled){
-        const ts = new Date(localStorage.getItem(KEY_ENABLED_AT) || Date.now());
-        badge.className = 'badge ok';
-        badge.textContent = '✅ PRO RJ habilitado nesta estação';
-        hint.innerHTML = `Habilitado em <strong>${ts.toLocaleString('pt-BR')}</strong>. Abra o <a href="sisreg-mock.html">SISREG RJ</a> para ativar o copiloto.`;
-        btnEnable.disabled = true;
-        btnEnable.textContent = 'Já habilitado';
-      } else {
-        badge.className = 'badge warn';
-        badge.textContent = 'ℹ️ PRO RJ ainda não habilitado';
-        hint.textContent = 'Clique em "Habilitar PRO RJ nesta estação" para prosseguir.';
-        btnEnable.disabled = false;
-        btnEnable.textContent = 'Habilitar PRO RJ nesta estação';
-      }
-    }
-
-    function resetDemo(){
-      const toRemove = [];
-      for(let i=0; i<localStorage.length; i++){
-        const k = localStorage.key(i);
-        if(k && k.startsWith(PREFIX)) toRemove.push(k);
-      }
-      toRemove.forEach(k => localStorage.removeItem(k));
-      renderStatus();
-      console.log('[PRO RJ DEMO] Removidas chaves:', toRemove);
-      toast('Dados da DEMO resetados');
-    }
-
-    function dumpKeys(){
-      const dump = {};
-      for(let i=0; i<localStorage.length; i++){
-        const k = localStorage.key(i);
-        if(k && k.startsWith(PREFIX)) dump[k] = localStorage.getItem(k);
-      }
-      console.log('[PRO RJ DEMO] Dump localStorage:', dump);
-      toast('Chaves listadas no console');
-    }
-
-    function mostrarAjuda(){
-      alert(
-`Como usar (Admin • SES-RJ):
-1) Clique em "Habilitar PRO RJ nesta estação".
-2) Abra "SISREG RJ" e clique no banner para ativar o Copiloto.
-3) Conclua o wizard (Gov.br fake → Permissões → Pronto).
-4) O painel lateral do PRO RJ aparecerá no SISREG RJ.
-
-Dica: Use "Resetar dados da DEMO" para recomeçar a apresentação.`
-      );
-    }
-
-    // Eventos
-    $('#btnEnable').addEventListener('click', ()=>{ setEnabled(true); toast('PRO RJ habilitado nesta estação'); });
-    $('#btnValidate').addEventListener('click', ()=>{ renderStatus(); toast('Status verificado'); });
-    $('#btnReset').addEventListener('click', resetDemo);
-    $('#btnDump').addEventListener('click', dumpKeys);
-
-    // Init
-    document.addEventListener('DOMContentLoaded', renderStatus);
-  </script>
 </body>
 </html>

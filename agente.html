@@ -546,20 +546,22 @@
         
         <!-- Admin Actions (somente para demo) -->
         <div class="card-footer">
-          <small class="text-gray-600">Ações de demonstração:</small>
-          <div class="admin-actions">
-            <button class="btn btn-sm btn-outline" onclick="ProData.populateMockData(); carregarDados();">
-              🎲 Popular com 20 registros
-            </button>
-            <button class="btn btn-sm btn-secondary" onclick="ProData.resetDemo()">
-              🔄 Reset Demo
-            </button>
-          </div>
-        </div>
-      </div>
+  <small class="text-gray-600">Ações do agente:</small>
+  <div class="admin-actions">
+    <button class="btn btn-sm btn-outline" onclick="ProData.populateMockData(); carregarDados();">
+      🎲 Popular com 20 registros
+    </button>
+    <a href="triagem.html" class="btn btn-sm btn-success" target="_blank">
+      🩺 Ir para a Triagem
+    </a>
+  </div>
+  <div style="margin-top: 0.75rem;">
+    <a href="governanca.html" style="font-size: 0.8rem; color: var(--azul-rj-dark); text-decoration: none;">
+      🔗 Painel do Agente → governanca.html
+    </a>
+  </div>
+</div>
 
-    </div>
-  </main>
 
   <script>
     // ================================

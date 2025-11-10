@@ -3,271 +3,1058 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PRO — Triagem (Mobile-first, 3 passos)</title>
-  <meta name="description" content="Triagem de gestante em 3 passos com classificação automática e confirmação visual." />
-  <link rel="stylesheet" href="assets/css/global.css" />
+  <title>Sua Triagem de Gestante | PRO GESTANTE - RJ</title>
+  <meta name="description" content="Triagem de gestante em 3 passos com classificação automática e cuidado humanizado." />
 
   <style>
-    /* Estilo leve específico do fluxo em etapas */
-    .wrap { max-width: 640px; margin: 96px auto 64px; padding: 0 16px; }
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,.06); }
-    .card-body { padding: 20px; }
-    .title { font-size: 1.25rem; font-weight: 700; color: var(--primary-dark); }
-    .muted { color: var(--gray); font-size: .95rem; }
-    .progress { height: 8px; background: var(--sand-300); border-radius: 999px; overflow: hidden; }
-    .progress > div { height: 100%; width: 0; background: linear-gradient(90deg, var(--primary), var(--primary-light)); transition: width .25s ease; }
-    .stepper { display: flex; align-items: center; gap: 8px; font-size: .85rem; color: var(--gray); margin-top: 8px; }
-    .step-dot { width: 8px; height: 8px; border-radius: 999px; background: var(--sand-300); }
-    .step-dot.active { background: var(--primary); }
-    .field { margin-top: 14px; }
-    .field label { display: block; font-weight: 600; font-size: .95rem; margin-bottom: 6px; color: var(--dark); }
-    .input, .select, .textarea {
-      width: 100%; padding: 12px 14px; border: 1px solid var(--border); border-radius: 10px; font-size: 1rem; background: #fff;
+    /* ================================
+       Cuidado da Gestante
+       Design System Humanizado
+       ================================ */
+
+    :root {
+      /* Paleta Bússola */
+      --lavanda: #8b7cd6;
+      --lavanda-50: #f5f3ff;
+      --lavanda-100: #ede9fe;
+      --lavanda-200: #ddd6fe;
+      --lavanda-500: #8b5cf6;
+      --lavanda-600: #6e5ec6;
+      --lavanda-700: #5b4da3;
+      
+      --pessego: #f3b089;
+      --pessego-50: #fef6ee;
+      --pessego-100: #fde9d7;
+      --pessego-200: #fbd0a9;
+      --pessego-400: #f3b089;
+      
+      --verde-agua: #59c3b6;
+      --verde-agua-50: #f0fdfa;
+      --verde-agua-100: #ccfbef;
+      --verde-agua-500: #14b8a6;
+      
+      --sand-50: #faf7f2;
+      --sand-100: #f4f0e9;
+      --sand-200: #e7e1d8;
+      --sand-300: #d5ccbe;
+      
+      --ink-600: #475569;
+      --ink-700: #334155;
+      --ink-800: #1f2937;
+      --ink-900: #0f172a;
+      
+      /* Status */
+      --critico: #fde2e2;
+      --critico-text: #b42318;
+      --alto: #fde4f0;
+      --alto-text: #9d174d;
+      --moderado: #fff1d6;
+      --moderado-text: #92400e;
+      --baixo: #e8f6ef;
+      --baixo-text: #166534;
+      
+      --shadow-soft: 0 8px 24px rgba(139, 124, 214, 0.12);
+      --shadow-warm: 0 4px 12px rgba(243, 176, 137, 0.15);
     }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .symptoms { display: grid; grid-template-columns: 1fr; gap: 8px; }
-    .symptoms label { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; background: #fff; }
-    .hint { font-size: .85rem; color: var(--gray); margin-top: 4px; }
-    .actions { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 16px; }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .btn { padding: 12px 14px; border-radius: 10px; font-weight: 700; border: 0; cursor: pointer; }
-    .btn-primary { background: var(--primary); color:#fff; }
-    .btn-secondary { background: var(--sand-200); color: var(--ink-700); }
-    .badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 999px; font-weight: 700; font-size: .85rem; border: 1px solid transparent; }
-    .crit { background: #fde2e2; color: #b42318; border-color:#fca5a5; }
-    .high { background: #fde4f0; color: #9d174d; border-color:#f9a8d4; }
-    .med  { background: #fff1d6; color: #92400e; border-color:#fcd34d; }
-    .low  { background: #e8f6ef; color: #166534; border-color:#86efac; }
-    .review { background: var(--sand-100); border: 1px dashed var(--border); padding: 12px; border-radius: 10px; }
-    .token { font-size:.8rem; color:var(--gray); margin-top:6px; }
-    .divider { height:1px; background: var(--border); margin: 14px 0; }
-    @media (min-width: 540px) {
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, var(--lavanda-50) 0%, var(--pessego-50) 50%, var(--verde-agua-50) 100%);
+      color: var(--ink-800);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      padding-bottom: 2rem;
+    }
+
+    ::selection {
+      background: var(--lavanda-200);
+      color: var(--ink-900);
+    }
+
+    /* ================================
+       Header Acolhedor
+       ================================ */
+    header {
+      background: linear-gradient(135deg, var(--lavanda) 0%, var(--lavanda-600) 100%);
+      padding: 1.25rem 0;
+      box-shadow: var(--shadow-soft);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+      color: white;
+    }
+
+    .logo-icon {
+      font-size: 2rem;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    .logo-text {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-links {
+      display: none;
+      gap: 1.5rem;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      opacity: 0.9;
+      transition: opacity 0.2s;
+    }
+
+    .nav-links a:hover {
+      opacity: 1;
+    }
+
+    .login-btn {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      padding: 0.5rem 1.25rem;
+      border-radius: 2rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      backdrop-filter: blur(10px);
+    }
+
+    .login-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    @media (min-width: 768px) {
+      .nav-links { display: flex; }
+    }
+
+    /* ================================
+       Main Content
+       ================================ */
+    .wrap {
+      max-width: 640px;
+      margin: 2rem auto 3rem;
+      padding: 0 1rem;
+    }
+
+    /* Welcome Banner */
+    .welcome-banner {
+      background: linear-gradient(135deg, var(--pessego-100) 0%, var(--verde-agua-100) 100%);
+      border-radius: 1.5rem;
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+      border: 2px solid var(--pessego-200);
+      box-shadow: var(--shadow-warm);
+    }
+
+    .welcome-content {
+      text-align: center;
+    }
+
+    .welcome-icon {
+      font-size: 3rem;
+      display: block;
+      margin-bottom: 0.75rem;
+    }
+
+    .welcome-content h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--ink-900);
+      margin-bottom: 0.5rem;
+    }
+
+    .welcome-content p {
+      color: var(--ink-700);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    /* Card Principal */
+    .card {
+      background: white;
+      border: 2px solid var(--sand-200);
+      border-radius: 1.5rem;
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+    }
+
+    .card-body {
+      padding: 2rem 1.75rem;
+    }
+
+    .title {
+      font-size: 1.375rem;
+      font-weight: 700;
+      color: var(--ink-900);
+      margin-bottom: 0.5rem;
+    }
+
+    .muted {
+      color: var(--ink-600);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    /* ================================
+       Barra de Progresso
+       ================================ */
+    .progress-section {
+      margin: 1.5rem 0;
+      padding: 1.25rem;
+      background: var(--lavanda-50);
+      border-radius: 1rem;
+      border: 1px solid var(--lavanda-200);
+    }
+
+    .progress {
+      height: 10px;
+      background: white;
+      border-radius: 999px;
+      overflow: hidden;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .progress > div {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, var(--lavanda) 0%, var(--pessego) 100%);
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 999px;
+    }
+
+    .stepper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--ink-600);
+      margin-top: 0.875rem;
+      font-weight: 500;
+    }
+
+    .step-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--sand-300);
+      transition: all 0.3s;
+    }
+
+    .step-dot.active {
+      background: var(--lavanda);
+      box-shadow: 0 0 0 4px var(--lavanda-100);
+    }
+
+    .step-label {
+      display: none;
+    }
+
+    @media (min-width: 480px) {
+      .step-label { display: inline; }
+    }
+
+    /* ================================
+       Form Elements
+       ================================ */
+    .field {
+      margin-top: 1.25rem;
+    }
+
+    .field label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 0.625rem;
+      color: var(--ink-800);
+    }
+
+    .label-icon {
+      font-size: 1.125rem;
+    }
+
+    .input, .select, .textarea {
+      width: 100%;
+      padding: 1rem 1.125rem;
+      border: 2px solid var(--sand-200);
+      border-radius: 1rem;
+      font-size: 1rem;
+      background: white;
+      font-family: inherit;
+      transition: all 0.3s;
+    }
+
+    .input:focus, .select:focus, .textarea:focus {
+      outline: none;
+      border-color: var(--lavanda);
+      box-shadow: 0 0 0 4px var(--lavanda-100);
+    }
+
+    .input::placeholder {
+      color: var(--ink-600);
+      opacity: 0.6;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    @media (min-width: 480px) {
+      .grid-2 { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* ================================
+       Symptoms Checkboxes
+       ================================ */
+    .symptoms {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+
+    .symptoms label {
+      display: flex;
+      align-items: center;
+      gap: 0.875rem;
+      padding: 1rem 1.125rem;
+      border: 2px solid var(--sand-200);
+      border-radius: 1rem;
+      background: white;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+    }
+
+    .symptoms label:hover {
+      border-color: var(--lavanda-300);
+      background: var(--lavanda-50);
+    }
+
+    .symptoms input[type="checkbox"] {
+      width: 1.25rem;
+      height: 1.25rem;
+      cursor: pointer;
+      accent-color: var(--lavanda);
+    }
+
+    .symptoms label[data-critical="true"] {
+      border-color: #fca5a5;
+      background: #fef2f2;
+    }
+
+    .symptoms label[data-critical="true"]:hover {
+      border-color: #f87171;
+    }
+
+    @media (min-width: 480px) {
       .symptoms { grid-template-columns: 1fr 1fr; }
-      .actions { grid-template-columns: 1fr 1fr; }
+    }
+
+    .hint {
+      font-size: 0.85rem;
+      color: var(--ink-600);
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+    }
+
+    /* ================================
+       Buttons
+       ================================ */
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    @media (min-width: 540px) {
+      .actions { grid-template-columns: 1fr; }
+    }
+
+    .btn {
+      padding: 1rem 1.5rem;
+      border-radius: 1rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--lavanda) 0%, var(--lavanda-600) 100%);
+      color: white;
+      box-shadow: 0 4px 12px rgba(139, 124, 214, 0.25);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(139, 124, 214, 0.35);
+    }
+
+    .btn-secondary {
+      background: var(--sand-100);
+      color: var(--ink-800);
+      border: 2px solid var(--sand-200);
+    }
+
+    .btn-secondary:hover {
+      background: var(--sand-200);
+    }
+
+    /* ================================
+       Badges
+       ================================ */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.625rem 1.125rem;
+      border-radius: 2rem;
+      font-weight: 700;
+      font-size: 0.875rem;
+      border: 2px solid;
+    }
+
+    .crit {
+      background: var(--critico);
+      color: var(--critico-text);
+      border-color: #fca5a5;
+    }
+
+    .high {
+      background: var(--alto);
+      color: var(--alto-text);
+      border-color: #f9a8d4;
+    }
+
+    .med {
+      background: var(--moderado);
+      color: var(--moderado-text);
+      border-color: #fcd34d;
+    }
+
+    .low {
+      background: var(--baixo);
+      color: var(--baixo-text);
+      border-color: #86efac;
+    }
+
+    /* ================================
+       Review Box
+       ================================ */
+    .review {
+      background: var(--sand-50);
+      border: 2px dashed var(--sand-300);
+      padding: 1.25rem;
+      border-radius: 1rem;
+      line-height: 1.75;
+    }
+
+    .review > div {
+      margin-bottom: 0.5rem;
+    }
+
+    .review strong {
+      color: var(--ink-900);
+    }
+
+    .token {
+      font-size: 0.8rem;
+      color: var(--ink-600);
+      margin-top: 0.75rem;
+      text-align: center;
+      padding: 0.5rem;
+      background: var(--lavanda-50);
+      border-radius: 0.5rem;
+      font-family: 'Courier New', monospace;
+    }
+
+    .divider {
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--sand-300), transparent);
+      margin: 1rem 0;
+    }
+
+    /* ================================
+       Success State
+       ================================ */
+    #done {
+      text-align: center;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    #done h2 {
+      font-size: 1.75rem;
+      color: var(--ink-900);
+      margin: 1rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .success-icon {
+      font-size: 2.5rem;
+      animation: bounce 0.6s ease;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    #done p {
+      margin: 0.75rem 0;
+    }
+
+    /* ================================
+       Footer
+       ================================ */
+    footer {
+      margin-top: 3rem;
+      padding: 1.5rem 0;
+      text-align: center;
+      color: var(--ink-600);
+      font-size: 0.875rem;
+    }
+
+    /* ================================
+       Emergency Alert
+       ================================ */
+    .emergency-alert {
+      background: linear-gradient(135deg, #fef2f2 0%, #fde4e4 100%);
+      border: 2px solid #fca5a5;
+      border-radius: 1rem;
+      padding: 1rem;
+      margin-top: 1rem;
+      display: none;
+    }
+
+    .emergency-alert.show {
+      display: block;
+      animation: shake 0.5s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    .emergency-alert strong {
+      color: #b42318;
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+    }
+
+    .emergency-alert p {
+      color: #991b1b;
+      font-size: 0.9rem;
+      margin: 0;
     }
   </style>
 </head>
 <body>
 
-  <!-- Header compacto -->
+  <!-- Header -->
   <header>
     <div class="container nav-container">
       <div class="logo" onclick="location.href='index.html'">
-        <span class="logo-icon">🩺</span>
-        <span class="logo-text">PRO</span>
+        <span class="logo-icon">🧭</span>
+        <span class="logo-text">RJ - Cuidado da Gestante</span>
       </div>
       <nav class="nav-links">
         <a href="index.html#sobre">Sobre</a>
         <a href="index.html#como-funciona">Como funciona</a>
       </nav>
-      <button class="login-btn" onclick="location.href='index.html'">Voltar</button>
+      <button class="login-btn" onclick="location.href='index.html'">Início</button>
     </div>
   </header>
 
   <main class="wrap">
+    <!-- Welcome Banner -->
+    <div class="welcome-banner">
+      <div class="welcome-content">
+        <span class="welcome-icon">💜</span>
+        <h1>Bem-vinda à sua triagem!</h1>
+        <p>Vamos cuidar de você e do seu bebê juntas. Este processo leva menos de 3 minutos e vai nos ajudar a entender melhor como você está.</p>
+      </div>
+    </div>
+
     <div class="card">
       <div class="card-body">
-        <div class="title">Triagem em 3 passos</div>
-        <div class="muted">Leva menos de 3 minutos. Em emergência, procure a unidade mais próxima.</div>
+        <div class="title">Sua triagem em 3 passos</div>
+        <div class="muted">
+          ⚠️ <strong>Atenção:</strong> Se você estiver com sintomas graves (sangramento intenso, dor muito forte, pressão muito alta), procure a unidade de saúde mais próxima imediatamente ou ligue para o SAMU 192.
+        </div>
 
         <!-- Barra de progresso -->
-        <div class="field" aria-hidden="true">
+        <div class="progress-section" aria-hidden="true">
           <div class="progress"><div id="pgFill" style="width: 0%"></div></div>
           <div class="stepper">
-            <div id="dot1" class="step-dot active"></div><span>Identificação</span>
-            <span style="margin:0 6px;">›</span>
-            <div id="dot2" class="step-dot"></div><span>Sintomas</span>
-            <span style="margin:0 6px;">›</span>
-            <div id="dot3" class="step-dot"></div><span>Revisão</span>
+            <div id="dot1" class="step-dot active"></div>
+            <span class="step-label">Sobre você</span>
+            <span style="margin:0 0.375rem;">›</span>
+            <div id="dot2" class="step-dot"></div>
+            <span class="step-label">Como você está</span>
+            <span style="margin:0 0.375rem;">›</span>
+            <div id="dot3" class="step-dot"></div>
+            <span class="step-label">Revisão</span>
           </div>
         </div>
 
-        <!-- Passo 1 -->
-        <section id="step1" aria-label="Passo 1 — Identificação" style="margin-top:10px;">
+        <!-- Passo 1: Identificação -->
+        <section id="step1" aria-label="Passo 1 — Sobre você">
           <div class="field">
-            <label for="nome">Seu nome completo</label>
-            <input id="nome" class="input" type="text" placeholder="Ex.: Ana Maria da Silva" required />
+            <label for="nome">
+              <span class="label-icon">👤</span>
+              Como você gostaria de ser chamada?
+            </label>
+            <input 
+              id="nome" 
+              class="input" 
+              type="text" 
+              placeholder="Ex.: Ana Maria" 
+              required 
+            />
+            <div class="hint">
+              💡 Use o nome que você prefere
+            </div>
           </div>
+
           <div class="grid-2">
             <div class="field">
-              <label for="cidade">Cidade</label>
-              <input id="cidade" class="input" type="text" placeholder="Ex.: Rio de Janeiro" required />
+              <label for="cidade">
+                <span class="label-icon">📍</span>
+                Sua cidade
+              </label>
+              <input 
+                id="cidade" 
+                class="input" 
+                type="text" 
+                placeholder="Ex.: Rio de Janeiro" 
+                required 
+              />
             </div>
             <div class="field">
-              <label for="ubs">UBS de referência (opcional)</label>
-              <input id="ubs" class="input" type="text" placeholder="Ex.: UBS Centro" />
+              <label for="ubs">
+                <span class="label-icon">🏥</span>
+                Sua UBS (opcional)
+              </label>
+              <input 
+                id="ubs" 
+                class="input" 
+                type="text" 
+                placeholder="Ex.: UBS Centro" 
+              />
             </div>
           </div>
+
           <div class="field">
-            <label for="ig">Idade Gestacional (semanas)</label>
-            <input id="ig" class="input" type="text" placeholder="Ex.: 28 semanas" />
+            <label for="ig">
+              <span class="label-icon">📅</span>
+              Quantas semanas de gestação?
+            </label>
+            <input 
+              id="ig" 
+              class="input" 
+              type="text" 
+              placeholder="Ex.: 28 semanas" 
+            />
+            <div class="hint">
+              💡 Se não souber exatamente, coloque sua melhor estimativa
+            </div>
           </div>
+
           <div class="actions">
-            <button class="btn btn-primary" id="toStep2">Continuar</button>
+            <button class="btn btn-primary" id="toStep2">
+              Continuar →
+            </button>
           </div>
         </section>
 
-        <!-- Passo 2 -->
-        <section id="step2" aria-label="Passo 2 — Sintomas" style="display:none;">
+        <!-- Passo 2: Sintomas -->
+        <section id="step2" aria-label="Passo 2 — Como você está" style="display:none;">
           <div class="field">
-            <label>Sintomas atuais</label>
+            <label>
+              <span class="label-icon">🩺</span>
+              O que você está sentindo agora?
+            </label>
             <div class="symptoms" id="symptomsList">
-              <!-- críticos -->
-              <label><input type="checkbox" value="Sangramento" data-critical="true" /> Sangramento</label>
-              <label><input type="checkbox" value="Dor forte" data-critical="true" /> Dor forte</label>
-              <label><input type="checkbox" value="Pressão alta" data-critical="true" /> Pressão alta</label>
-              <label><input type="checkbox" value="Convulsão" data-critical="true" /> Convulsão</label>
-              <!-- não críticos -->
-              <label><input type="checkbox" value="Dor de cabeça" /> Dor de cabeça</label>
-              <label><input type="checkbox" value="Inchaço" /> Inchaço</label>
-              <label><input type="checkbox" value="Náusea" /> Náusea</label>
-              <label><input type="checkbox" value="Sem sintomas" /> Sem sintomas</label>
+              <!-- Sintomas críticos -->
+              <label data-critical="true">
+                <input type="checkbox" value="Sangramento" data-critical="true" />
+                <span>🩸 Sangramento vaginal</span>
+              </label>
+              <label data-critical="true">
+                <input type="checkbox" value="Dor forte" data-critical="true" />
+                <span>⚡ Dor muito forte</span>
+              </label>
+              <label data-critical="true">
+                <input type="checkbox" value="Pressão alta" data-critical="true" />
+                <span>💓 Pressão alta</span>
+              </label>
+              <label data-critical="true">
+                <input type="checkbox" value="Convulsão" data-critical="true" />
+                <span>🚨 Convulsão</span>
+              </label>
+              
+              <!-- Sintomas moderados -->
+              <label>
+                <input type="checkbox" value="Dor de cabeça" />
+                <span>🤕 Dor de cabeça</span>
+              </label>
+              <label>
+                <input type="checkbox" value="Inchaço" />
+                <span>🦶 Inchaço</span>
+              </label>
+              <label>
+                <input type="checkbox" value="Náusea" />
+                <span>😰 Náusea/enjoo</span>
+              </label>
+              <label>
+                <input type="checkbox" value="Sem sintomas" />
+                <span>✨ Estou me sentindo bem</span>
+              </label>
             </div>
-            <div class="hint">Marque tudo que estiver sentindo agora.</div>
+            <div class="hint">
+              💡 Pode marcar mais de uma opção
+            </div>
           </div>
+
+          <div id="emergencyAlert" class="emergency-alert">
+            <strong>⚠️ Sintomas que precisam de atenção imediata!</strong>
+            <p>Você marcou sintomas que podem precisar de atendimento urgente. Continue a triagem, mas se piorar, procure ajuda imediatamente.</p>
+          </div>
+
           <div class="row actions">
-            <button class="btn btn-secondary" id="back1">Voltar</button>
-            <button class="btn btn-primary" id="toStep3">Revisar</button>
+            <button class="btn btn-secondary" id="back1">
+              ← Voltar
+            </button>
+            <button class="btn btn-primary" id="toStep3">
+              Revisar →
+            </button>
           </div>
         </section>
 
-        <!-- Passo 3 -->
+        <!-- Passo 3: Revisão -->
         <section id="step3" aria-label="Passo 3 — Revisão e Envio" style="display:none;">
-          <div class="review" id="reviewBox">
-            <!-- preenchido por JS -->
+          <div class="field">
+            <label>
+              <span class="label-icon">✨</span>
+              Confira suas informações
+            </label>
+            <div class="review" id="reviewBox">
+              <!-- preenchido por JS -->
+            </div>
           </div>
-          <div class="token" id="tokenInfo">Token: —</div>
+
+          <div class="token" id="tokenInfo">Código da triagem: —</div>
+
           <div class="divider"></div>
+
           <div class="row actions">
-            <button class="btn btn-secondary" id="back2">Voltar</button>
-            <button class="btn btn-primary" id="finish">Finalizar Triagem</button>
+            <button class="btn btn-secondary" id="back2">
+              ← Voltar
+            </button>
+            <button class="btn btn-primary" id="finish">
+              ✓ Enviar Triagem
+            </button>
           </div>
         </section>
 
         <!-- Confirmação -->
         <section id="done" style="display:none;">
-          <h2 style="margin-top:8px;">Triagem enviada com sucesso ✅</h2>
+          <span class="success-icon">🎉</span>
+          <h2>Triagem enviada com sucesso!</h2>
           <p class="muted" id="resumoOk">—</p>
-          <p id="riscoBadge" class="badge low" style="margin:8px 0;">Risco —</p>
-          <p><strong>Unidade sugerida: </strong><span id="unidadeOk">—</span></p>
-          <div class="actions" style="margin-top: 14px;">
-            <a class="btn btn-secondary" href="index.html">Voltar ao início</a>
-            <a class="btn btn-primary" href="sisreg-mock.html">Ver ambiente do regulador (demo)</a>
+          
+          <div style="margin: 1.5rem 0;">
+            <p id="riscoBadge" class="badge low">Nível de risco: —</p>
+          </div>
+
+          <div style="background: var(--lavanda-50); padding: 1.25rem; border-radius: 1rem; margin: 1rem 0; text-align: left;">
+            <strong style="display: block; margin-bottom: 0.5rem; color: var(--ink-900);">📍 Onde você deve ir:</strong>
+            <p style="font-size: 1.125rem; color: var(--lavanda-700); font-weight: 600; margin: 0;" id="unidadeOk">—</p>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-primary" onclick="location.href='index.html'">
+              Voltar ao Início
+            </button>
           </div>
         </section>
+
       </div>
     </div>
   </main>
 
   <footer>
-    <div class="container footer-bottom">© PRO Demo — para fins de demonstração</div>
+    <div class="container">
+      <p>💜 Feito com carinho pela Bússola da Gestante × PRO RJ</p>
+      <p style="font-size: 0.8rem; margin-top: 0.5rem; opacity: 0.7;">Este é um projeto de demonstração</p>
+
+      <!-- 🔹 Adição discreta: chamada para o painel do regulador -->
+      <p style="margin-top: 1rem; font-size: 0.85rem;">
+        <a href="painel-regulador.html" style="color: var(--lavanda-700); text-decoration: none; opacity: 0.8;">
+          ⚖️ Painel do Regulador (acesso para avaliação)
+        </a>
+      </p>
+    </div>
   </footer>
-
+ 
   <script>
-    // ---------- Helpers de storage ----------
-    const readJSON = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
+    // ========================================
+    // Helpers & Configuração
+    // ========================================
+    const readJSON = (k, d) => { 
+      try { 
+        return JSON.parse(localStorage.getItem(k)) ?? d; 
+      } catch { 
+        return d; 
+      } 
+    };
+    
     const writeJSON = (k, v) => localStorage.setItem(k, JSON.stringify(v));
-    const uuid = () => 'PRO-' + Date.now() + '-' + Math.random().toString(36).slice(2,8).toUpperCase();
+    
+    const uuid = () => 'PRO-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8).toUpperCase();
 
-    // ---------- Token e convite ----------
+    // Token do convite
     const params = new URLSearchParams(location.search);
     const token = params.get('t') || '';
     const tokenInfo = document.getElementById('tokenInfo');
-    tokenInfo.textContent = token ? `Token: ${token}` : 'Sem token (acesso direto)';
+    tokenInfo.textContent = token ? `Código da triagem: ${token}` : 'Código da triagem: Gerado ao finalizar';
 
-    // ---------- Motor (fallback) ----------
-    // Espera-se window.ProMotor.classificar({ sintomas, ig, cidade }) -> { risco, unidade, score }
+    // Motor de classificação (fallback)
     if (!window.ProMotor) {
       window.ProMotor = {
         classificar: ({ sintomas = [], ig = '', cidade = '' }) => {
           const crits = ['Sangramento', 'Dor forte', 'Pressão alta', 'Convulsão'];
-          const meds  = ['Dor de cabeça', 'Inchaço', 'Náusea'];
+          const meds = ['Dor de cabeça', 'Inchaço', 'Náusea'];
           const hasC = sintomas.some(s => crits.includes(s));
           const hasM = sintomas.some(s => meds.includes(s));
+          
           let risco = 'low';
           if (hasC) risco = 'crit';
           else if (hasM) risco = 'med';
+          
           let unidade = 'UBS de Referência';
-          if (risco === 'crit') unidade = 'Hospital Central';
-          else if (risco === 'high') unidade = 'Maternidade São José';
-          else if (risco === 'med') unidade = 'UBS Bairro Novo';
-          if (cidade?.toLowerCase().includes('niter')) unidade = 'Maternidade São José';
+          if (risco === 'crit') unidade = 'Pronto-Socorro ou Hospital Materno-Infantil mais próximo';
+          else if (risco === 'high') unidade = 'Maternidade de Referência';
+          else if (risco === 'med') unidade = 'UBS de Referência (agendar consulta)';
+          
           return { risco, unidade, score: hasC ? 95 : hasM ? 65 : 35 };
         }
       };
     }
 
-    // ---------- Estado do formulário ----------
+    // ========================================
+    // Estado do Formulário
+    // ========================================
     const state = {
-      nome: '', cidade: '', ubs: '', ig: '', sintomas: [],
+      nome: '', 
+      cidade: '', 
+      ubs: '', 
+      ig: '', 
+      sintomas: [],
       cls: { risco: 'low', unidade: 'UBS de Referência', score: 0 }
     };
 
-    // ---------- Navegação de passos ----------
+    // ========================================
+    // Navegação entre Passos
+    // ========================================
     const step1 = document.getElementById('step1');
     const step2 = document.getElementById('step2');
     const step3 = document.getElementById('step3');
-    const done  = document.getElementById('done');
+    const done = document.getElementById('done');
     const pgFill = document.getElementById('pgFill');
-    const dots = [document.getElementById('dot1'), document.getElementById('dot2'), document.getElementById('dot3')];
+    const dots = [
+      document.getElementById('dot1'), 
+      document.getElementById('dot2'), 
+      document.getElementById('dot3')
+    ];
 
     function setStep(n) {
       [step1, step2, step3, done].forEach(s => s.style.display = 'none');
+      
       if (n === 1) step1.style.display = 'block';
       if (n === 2) step2.style.display = 'block';
       if (n === 3) step3.style.display = 'block';
       if (n === 4) done.style.display = 'block';
-      const pct = n === 1 ? 10 : n === 2 ? 55 : n === 3 ? 95 : 100;
+      
+      const pct = n === 1 ? 15 : n === 2 ? 60 : n === 3 ? 95 : 100;
       pgFill.style.width = pct + '%';
+      
       dots.forEach((d, i) => d.classList.toggle('active', i < n));
+      
+      // Scroll suave para o topo
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // ---------- Passo 1 -> 2 ----------
+    // ========================================
+    // Passo 1 → Passo 2
+    // ========================================
     document.getElementById('toStep2').addEventListener('click', () => {
       state.nome = document.getElementById('nome').value.trim();
       state.cidade = document.getElementById('cidade').value.trim();
       state.ubs = document.getElementById('ubs').value.trim();
       state.ig = document.getElementById('ig').value.trim();
-      if (!state.nome || !state.cidade) { alert('Preencha Nome e Cidade.'); return; }
+      
+      if (!state.nome || !state.cidade) {
+        alert('💜 Por favor, preencha seu nome e cidade para continuar.');
+        return;
+      }
+      
       setStep(2);
     });
 
-    // ---------- Passo 2 navegação ----------
+    // ========================================
+    // Passo 2: Detecção de sintomas críticos
+    // ========================================
+    const emergencyAlert = document.getElementById('emergencyAlert');
+    const symptomCheckboxes = document.querySelectorAll('#symptomsList input[type="checkbox"]');
+
+    symptomCheckboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', () => {
+        const hasCritical = Array.from(symptomCheckboxes)
+          .some(cb => cb.checked && cb.dataset.critical === 'true');
+        
+        if (hasCritical) {
+          emergencyAlert.classList.add('show');
+        } else {
+          emergencyAlert.classList.remove('show');
+        }
+      });
+    });
+
+    // ========================================
+    // Navegação Passo 2
+    // ========================================
     document.getElementById('back1').addEventListener('click', () => setStep(1));
+
     document.getElementById('toStep3').addEventListener('click', () => {
-      const checked = Array.from(document.querySelectorAll('#symptomsList input:checked')).map(e => e.value);
-      // Se “Sem sintomas” estiver marcado, remove outros por consistência
-      const sem = checked.includes('Sem sintomas') ? ['Sem sintomas'] : checked;
+      const checked = Array.from(document.querySelectorAll('#symptomsList input:checked'))
+        .map(e => e.value);
+      
+      // Se "Sem sintomas" marcado, limpa outros
+      const sem = checked.includes('Estou me sentindo bem') ? ['Estou me sentindo bem'] : checked;
       state.sintomas = sem;
 
-      // Classificar já na revisão
-      state.cls = window.ProMotor.classificar({ sintomas: state.sintomas, ig: state.ig, cidade: state.cidade });
+      // Classificar
+      state.cls = window.ProMotor.classificar({ 
+        sintomas: state.sintomas, 
+        ig: state.ig, 
+        cidade: state.cidade 
+      });
 
       // Preencher revisão
       const review = document.getElementById('reviewBox');
+      const sintomasText = state.sintomas.length 
+        ? state.sintomas.join(' • ') 
+        : 'Nenhum sintoma informado';
+
+      const riscoMap = {
+        'crit': { label: 'Crítico', emoji: '🚨', class: 'crit' },
+        'high': { label: 'Alto', emoji: '⚠️', class: 'high' },
+        'med': { label: 'Moderado', emoji: '⚡', class: 'med' },
+        'low': { label: 'Baixo', emoji: '✅', class: 'low' }
+      };
+
+      const riscoInfo = riscoMap[state.cls.risco] || riscoMap.low;
+
       review.innerHTML = `
-        <div><strong>Nome:</strong> ${state.nome}</div>
-        <div><strong>Cidade:</strong> ${state.cidade}</div>
-        <div><strong>UBS:</strong> ${state.ubs || 'Não informado'}</div>
-        <div><strong>IG:</strong> ${state.ig || 'Não informado'}</div>
-        <div><strong>Sintomas:</strong> ${state.sintomas.length ? state.sintomas.join(' • ') : 'Não informado'}</div>
+        <div><strong>👤 Nome:</strong> ${state.nome}</div>
+        <div><strong>📍 Cidade:</strong> ${state.cidade}</div>
+        <div><strong>🏥 UBS:</strong> ${state.ubs || 'Não informado'}</div>
+        <div><strong>📅 Gestação:</strong> ${state.ig || 'Não informado'}</div>
+        <div><strong>🩺 Sintomas:</strong> ${sintomasText}</div>
         <div class="divider"></div>
-        <div><strong>Classificação (preview):</strong>
-          <span class="badge ${state.cls.risco === 'crit' ? 'crit' : state.cls.risco === 'high' ? 'high' : state.cls.risco === 'med' ? 'med' : 'low'}">
-            ${state.cls.risco === 'crit' ? 'Crítico' : state.cls.risco === 'high' ? 'Alto' : state.cls.risco === 'med' ? 'Moderado' : 'Baixo'}
+        <div>
+          <strong>Classificação preliminar:</strong><br>
+          <span class="badge ${riscoInfo.class}" style="margin-top: 0.5rem;">
+            ${riscoInfo.emoji} Risco ${riscoInfo.label}
           </span>
         </div>
-        <div><strong>Unidade sugerida:</strong> ${state.cls.unidade}</div>
+        <div style="margin-top: 0.75rem;">
+          <strong>📍 Unidade sugerida:</strong><br>
+          <span style="color: var(--lavanda-600); font-weight: 600;">${state.cls.unidade}</span>
+        </div>
       `;
+      
       setStep(3);
     });
+
     document.getElementById('back2').addEventListener('click', () => setStep(2));
 
-    // ---------- Finalizar ----------
+    // ========================================
+    // Finalizar Triagem
+    // ========================================
     document.getElementById('finish').addEventListener('click', () => {
       // Criar ticket
       const tickets = readJSON('pro_demo_tickets', []);
       const id = uuid();
+      
       const novo = {
         id,
         token: token || null,
@@ -282,10 +1069,11 @@
         createdAt: new Date().toISOString(),
         status: 'Aguardando'
       };
+      
       tickets.push(novo);
       writeJSON('pro_demo_tickets', tickets);
 
-      // Atualiza convite (se houver)
+      // Atualizar convite se houver
       const invites = readJSON('pro_demo_invites', []);
       const idx = invites.findIndex(i => i.token === token);
       if (idx > -1) {
@@ -294,33 +1082,54 @@
         writeJSON('pro_demo_invites', invites);
       }
 
-      // Sinal ao "plugin" (demo)
+      // Sinal para demo
       localStorage.setItem('pro_demo_last_new_ticket', id);
 
       // Feedback final
-      const map = { crit: ['Crítico', 'crit'], high: ['Alto', 'high'], med: ['Moderado', 'med'], low: ['Baixo', 'low'] };
-      const [lbl, cls] = map[state.cls.risco] || map.low;
-      document.getElementById('resumoOk').textContent = `Obrigada, ${state.nome}. Sua triagem foi registrada.`;
+      const riscoMap = {
+        'crit': { label: 'Crítico', emoji: '🚨', class: 'crit' },
+        'high': { label: 'Alto', emoji: '⚠️', class: 'high' },
+        'med': { label: 'Moderado', emoji: '⚡', class: 'med' },
+        'low': { label: 'Baixo', emoji: '✅', class: 'low' }
+      };
+
+      const riscoInfo = riscoMap[state.cls.risco] || riscoMap.low;
+
+      document.getElementById('resumoOk').textContent = 
+        `Obrigada, ${state.nome}! Recebemos sua triagem e vamos cuidar de você.`;
+      
       const riscoBadge = document.getElementById('riscoBadge');
-      riscoBadge.className = `badge ${cls}`;
-      riscoBadge.textContent = `Nível de risco: ${lbl}`;
+      riscoBadge.className = `badge ${riscoInfo.class}`;
+      riscoBadge.textContent = `${riscoInfo.emoji} Nível de risco: ${riscoInfo.label}`;
+      
       document.getElementById('unidadeOk').textContent = state.cls.unidade;
 
       setStep(4);
-      // (opcional) reforço para sintomas críticos
+
+      // Alerta adicional para casos críticos
       if (state.cls.risco === 'crit') {
-        setTimeout(() => alert('Atenção: sintomas críticos informados. Se houver piora, procure atendimento imediato.'), 200);
+        setTimeout(() => {
+          alert('🚨 ATENÇÃO: Você informou sintomas que podem precisar de atendimento urgente. Se a situação piorar, não hesite em procurar ajuda imediatamente ou ligar para o SAMU 192.');
+        }, 300);
       }
     });
 
-    // ---------- Hidratar cidade/ubs via convite (se existir) ----------
-    (function hydrateFromInvite(){
+    // ========================================
+    // Hidratação de dados do convite
+    // ========================================
+    (function hydrateFromInvite() {
       if (!token) return;
+      
       const invites = readJSON('pro_demo_invites', []);
       const inv = invites.find(i => i.token === token);
+      
       if (inv && inv.prefill) {
-        document.getElementById('cidade').value = inv.prefill.cidade || '';
-        document.getElementById('ubs').value = inv.prefill.ubs || '';
+        if (inv.prefill.cidade) {
+          document.getElementById('cidade').value = inv.prefill.cidade;
+        }
+        if (inv.prefill.ubs) {
+          document.getElementById('ubs').value = inv.prefill.ubs;
+        }
       }
     })();
 

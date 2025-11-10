@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
@@ -89,6 +89,30 @@
       border: 1px solid var(--border);
     }
     .log pre { font-family: monospace; font-size: .85rem; white-space: pre-wrap; }
+
+    /* botãozinho discreto para o plano operacional */
+    .log-actions {
+      display: flex;
+      justify-content: flex-start; /* 👈 agora fica do lado esquerdo */
+      margin-top: 8px;
+    }
+    .btn-planinho {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #e2e8f0;
+      border: 1px solid #cbd5f5;
+      color: #334155;
+      font-size: .75rem;
+      padding: 6px 10px;
+      border-radius: 999px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .btn-planinho:hover {
+      background: #cbd5f5;
+    }
   </style>
 </head>
 <body>
@@ -118,6 +142,13 @@
   <section class="log" id="auditLog">
     <strong>📜 Log de Auditoria</strong>
     <pre id="logOutput">(vazio)</pre>
+
+    <!-- botãozinho discreto para o plano operacional -->
+    <div class="log-actions">
+      <a href="plano-operacional.html" target="_blank" class="btn-planinho" title="Abrir plano operacional">
+        ↗ plano operacional
+      </a>
+    </div>
   </section>
 </main>
 
@@ -193,7 +224,9 @@
       el.textContent = '(vazio)';
       return;
     }
-    el.textContent = audit.map(a => `[${new Date(a.ts).toLocaleString('pt-BR')}] ${a.action} — ${a.ticket.nome} (${a.ticket.risco})`).join('\n');
+    el.textContent = audit
+      .map(a => `[${new Date(a.ts).toLocaleString('pt-BR')}] ${a.action} — ${a.ticket.nome} (${a.ticket.risco})`)
+      .join('\n');
   }
 
   // Eventos
